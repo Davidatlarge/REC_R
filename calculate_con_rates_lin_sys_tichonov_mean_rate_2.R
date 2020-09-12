@@ -23,9 +23,10 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   bnd_cond.C_z_min <- bnd_cond.C_z_min / C_scal
   bnd_cond.C_z_max <- bnd_cond.C_z_max / C_scal
   
+  print('Starting Tichonov - Regularization')
   # ------- some pre-calculations ------
-  z_c_red <- z_c[2:length(z_c)-1]
-  C_c_red <- C_c[2:length(z_c)-1]
+  z_c_red <- z_c[2:(length(z_c)-1)]
+  C_c_red <- C_c[2:(length(z_c)-1)]
   N_red <- length(z_c_red)
   C_c_red <- make_column_vector(C_c_red)
   delta_z <- z_c[2] - z_c[1]
@@ -34,20 +35,22 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   A_e_F_d <- calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff(z_c, D_total, omega, beta, phi, C_water#, 
                                                                            #bnd_cond # OBSOLETE
                                                                            )
-  a <- A_e_F_d$A
+  A <- A_e_F_d$A
   e <- A_e_F_d$e
-  F <- A_e_F_d$F
+  F <- A_e_F_d$Diff_op
   d <- A_e_F_d$d
   
   A_ad <- t(A)
-  #### continue here ##########
+
   B_L0_L1_L2 <- calculate_B_matrix(l_0, l_1, l_2, N_red, z_c_red)
   B <- B_L0_L1_L2$B
   L0 <- B_L0_L1_L2$L0
   L1 <- B_L0_L1_L2$L1
   L2 <- B_L0_L1_L2$L2
   
-  C_hat <- C_c_red + e
+  print ('ready with Tichonov - Matrices: A and B')
+  
+  C_hat <- matrix(C_c_red, nrow=length(C_c_red), ncol=length(C_c_red), byrow=FALSE) + e # repeat the [1:N] matrix 'C_c_red' N times to make it an [N:N] matrix
   # ----------------------------------------------
   
   

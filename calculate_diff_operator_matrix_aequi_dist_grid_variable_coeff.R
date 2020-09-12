@@ -7,11 +7,11 @@
 # For the first derivative term, a blended scheme according to Boudreau is
 # used. For the second derivative term, a central difference scheme is used.
 
-calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z = z_c, # PROBALY z_c
+calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # PROBALY z_c
                                                                           D,
                                                                           omega,
                                                                           beta,
-                                                                          por = phi, # MAYBE phi ??????
+                                                                          por, # MAYBE phi ??????
                                                                           C_water#,
                                                                           #bnd_cond # OBSOLETE
 ) {
