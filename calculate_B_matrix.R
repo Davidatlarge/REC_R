@@ -1,8 +1,8 @@
 # Matrix B for sympathy functional
 # ----------- calculate B-Matrix -------------------
-calculate_B_matrix <- function(lam_0,
-                               lam_1,
-                               lam_2,
+calculate_B_matrix <- function(lam_0, # =l_0
+                               lam_1, # =l_1
+                               lam_2, # =l_2
                                N_red,
                                z_c
 ) {
