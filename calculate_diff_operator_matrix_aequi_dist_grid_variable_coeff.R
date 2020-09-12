@@ -18,19 +18,19 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z = z_
   N_grid <- length(z)
   N <- N_grid - 2  # Dimension of Matrix: N = N_grid - 2
   
-  # --------- reading the bnd_con structure -----
-  C_z_min <- read_bnd_cond_structure()$C_z_min # requires defining read_bnd_cond_structure()
-  C_z_max <- read_bnd_cond_structure()$C_z_max # requires defining read_bnd_cond_structure()
-  type_z_min <- read_bnd_cond_structure()$type_z_min # requires defining read_bnd_cond_structure()
-  type_z_max <- read_bnd_cond_structure()$type_z_max # requires defining read_bnd_cond_structure()
+  # --------- reading the bnd_con structure ----- # requires defining read_bnd_cond_structure()
+  C_z_min <- read_bnd_cond_structure()$C_z_min
+  C_z_max <- read_bnd_cond_structure()$C_z_max
+  type_z_min <- read_bnd_cond_structure()$type_z_min
+  type_z_max <- read_bnd_cond_structure()$type_z_max
   # ---------------------------------------------
   
-  # ----- make row vectors --------------
-  z <- make_row_vector(z) # requires defining make_row_vector()
-  D <- make_row_vector(D) # requires defining make_row_vector()
-  omega <- make_row_vector(omega) # requires defining make_row_vector()
-  beta <- make_row_vector(beta) # requires defining make_row_vector()
-  por <- make_row_vector(por) # requires defining make_row_vector()
+  # ----- make row vectors -------------- # requires defining make_row_vector()
+  z <- make_row_vector(z) 
+  D <- make_row_vector(D)
+  omega <- make_row_vector(omega)
+  beta <- make_row_vector(beta)
+  por <- make_row_vector(por)
   # -------------------------------------
   
   # ------- determine grid spacings -------
