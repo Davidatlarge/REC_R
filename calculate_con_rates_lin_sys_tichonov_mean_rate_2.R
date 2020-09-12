@@ -4,7 +4,7 @@
 
 calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   C_water,      # from top fun
-  bnd_cond,     # ???????????????????????
+  #bnd_cond,    # OBSOLETE
   alpha_ticho,  # from top fun
   l_0,          # from top fun
   l_1,          # from top fun
@@ -50,7 +50,7 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   
   print ('ready with Tichonov - Matrices: A and B')
   
-  C_hat <- matrix(C_c_red, nrow=length(C_c_red), ncol=length(C_c_red), byrow=FALSE) + e # repeat the [1:N] matrix 'C_c_red' N times to make it an [N:N] matrix
+  C_hat <- C_c_red + e
   # ----------------------------------------------
   
   
@@ -63,25 +63,38 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   
   # -------- Estimating the best alpha Parameter -----------------------
   for(k in 1:length(alpha_ticho)) {
-    k
+    
     alpha <- alpha_ticho[k]
     
     # ------- finding the tichonov solution --------  	
-    R_tilde <- inv(A_ad %*% A + alpha %*% B) %*% A_ad %*% C_tilde	
+    R_tilde <- pracma::inv(A_ad %*% A + alpha * B) %*% A_ad %*% C_tilde	
     # ----------------------------------------------
     
     # ------- constructing the final solution -------
-    con_rate <- determine_con_and_rate(delta_z, R_tilde, A, e, R_mean, C_mean, bnd_cond)
-    R_tich_c_m <- con_rate$R_c[k,] # in r all elements of a dim are indexed by no operator
-    C_tich_c_m <- con_rate$C_c[k,]
+    con_rate <- determine_con_and_rate(delta_z, R_tilde, A, e, R_mean, C_mean
+                                       #, bnd_cond # OBSOLETE
+    )
+    if(k == 1) {
+      R_tich_c_m <- con_rate$R_c
+      C_tich_c_m <- con_rate$C_c
+    } else if(k > 1){
+      R_tich_c_m <- rbind(R_tich_c_m, con_rate$R_c)
+      C_tich_c_m <- rbind(C_tich_c_m, con_rate$C_c)
+    } 
     # matlab code: [R_tich_c_m(k,:),C_tich_c_m(k,:)] = determine_con_and_rate(delta_z,R_tilde,A,e,R_mean,C_mean,bnd_cond);
     # -----------------------------------------------
     
     # -------- calculate Tichonov-optimal parameter function -------
     OTPQ <- optimal_ticho_parameter_quotientenkriterium(R_tilde, C_tilde, B, A, alpha)
-    quot_crit <- OTPQ[k]
+    
+    if(k == 1) {
+      quot_crit <- OTPQ
+    } else if(k > 1){
+      quot_crit <- append(quot_crit, OTPQ)
+    } 
     # matlab code: quot_crit(k) = optimal_ticho_parameter_quotientenkriterium(R_tilde,C_tilde,B,A,alpha)
   }
+  # ---------------------------------------------------------------------
   
   # ------ finding the minima of the criteria functions --        
   locmin <- find_local_minimum_with_smallest_x(-quot_crit, alpha_ticho)
@@ -89,16 +102,14 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   index <- locmin$ind_min
   found <- locmin$found
   
-  found
-  if(found == 0) {
-    "[mini,index] = min(-quot_crit)" # no local minimum
+  if(found == 0) {# no local minimum
+    mini <- min(-quot_crit)
+    index <- which.min(-quot_crit)
   } 
   
   print('finding optimal alpha with ratio criterion')        
-  
-  alpha_opt = alpha_ticho(index);
-  print('optimal alpha for Tichonov - Regularization:')
-  alpha_opt
+  alpha_opt <- alpha_ticho[index]
+  print(paste('optimal alpha for Tichonov - Regularization:\n', alpha_opt))
   
   R_out <- R_tich_c_m[index,]
   C_out <- C_tich_c_m[index,]
