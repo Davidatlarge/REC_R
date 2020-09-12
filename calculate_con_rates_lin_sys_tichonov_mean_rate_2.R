@@ -31,14 +31,16 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   delta_z <- z_c[2] - z_c[1]
   
   # ----- Calculate the neccessary matrices ------
-  A_e_F_d <- calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff(z_c, D_total, omega, beta, phi, C_water, bnd_cond)
+  A_e_F_d <- calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff(z_c, D_total, omega, beta, phi, C_water#, 
+                                                                           #bnd_cond # OBSOLETE
+                                                                           )
   a <- A_e_F_d$A
   e <- A_e_F_d$e
   F <- A_e_F_d$F
   d <- A_e_F_d$d
   
   A_ad <- t(A)
-  
+  #### continue here ##########
   B_L0_L1_L2 <- calculate_B_matrix(l_0, l_1, l_2, N_red, z_c_red)
   B <- B_L0_L1_L2$B
   L0 <- B_L0_L1_L2$L0
