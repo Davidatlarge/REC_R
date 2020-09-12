@@ -7,22 +7,22 @@
 # For the first derivative term, a blended scheme according to Boudreau is
 # used. For the second derivative term, a central difference scheme is used.
 
-calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z,
+calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z = z_c, # PROBALY z_c
                                                                           D,
                                                                           omega,
                                                                           beta,
-                                                                          por,
-                                                                          C_water,
-                                                                          bnd_cond
+                                                                          por = phi, # MAYBE phi ??????
+                                                                          C_water#,
+                                                                          #bnd_cond # OBSOLETE
 ) {
   N_grid <- length(z)
   N <- N_grid - 2  # Dimension of Matrix: N = N_grid - 2
   
   # --------- reading the bnd_con structure -----
-  C_z_min <- read_bnd_cond_structure(bnd_cond)$C_z_min # requires defining read_bnd_cond_structure()
-  C_z_max <- read_bnd_cond_structure(bnd_cond)$C_z_max # requires defining read_bnd_cond_structure()
-  type_z_min <- read_bnd_cond_structure(bnd_cond)$type_z_min # requires defining read_bnd_cond_structure()
-  type_z_max <- read_bnd_cond_structure(bnd_cond)$type_z_max # requires defining read_bnd_cond_structure()
+  C_z_min <- read_bnd_cond_structure()$C_z_min # requires defining read_bnd_cond_structure()
+  C_z_max <- read_bnd_cond_structure()$C_z_max # requires defining read_bnd_cond_structure()
+  type_z_min <- read_bnd_cond_structure()$type_z_min # requires defining read_bnd_cond_structure()
+  type_z_max <- read_bnd_cond_structure()$type_z_max # requires defining read_bnd_cond_structure()
   # ---------------------------------------------
   
   # ----- make row vectors --------------
@@ -51,11 +51,12 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z,
   
   # ----- construct blending factor sigma ---------------
   for(i in 1:N_grid ) {
+    if(!exists("sig")) {sig <- numeric(0)}
     if(s[i] == 0) {
       sig[i] <- 0
     } else {
       eta <- s[i] * delta_z / ( 2 * D2[i] )
-      sig[i] <- coth[eta] - 1/eta
+      sig[i] <- pracma::coth(eta) - 1/eta
     }
   }
   # -------------------------------------------------------
@@ -67,7 +68,7 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z,
   # -------------------------------------------------------
   
   # ----- Construction of the forward Diff_op -------------------------
-  Diff_op <- zeros(N, N)
+  Diff_op <- matlab::zeros(N, N)
   for(i in 2:N-1) {  
     Diff_op[i, i-1] <- aa[i+1]
     Diff_op[i,i]   <- bb[i+1]
@@ -75,9 +76,7 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z,
   }
   
   # first line
-  if(
-    type_z_min == 1   # Dirichlet conditions
-  ) {
+  if(type_z_min == 1) { # Dirichlet conditions
     print('Using Dirichlet boundary conditions for top boundary')
     Diff_op[1,1] <- bb[2]
     Diff_op[1,2] <- cc[2]
@@ -101,13 +100,13 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z,
   
   # ------ construction of A -------------------------
   #Diff_op
-  A <- inv(Diff_op)                       # inv() in r expressedly does a "matlab style" inverse matrix
+  A <- pracma::inv(Diff_op)
   # -------------------------------------------------
   
   # ------- Constructing e -----------------
-  d <- -C_water%*%t(beta2[2:N_grid-1])    # matrix multiplication via %*% might be unneccessary
-  
-  # first line of d
+  d <- -C_water * t(beta2[2:(N_grid-1)])  # results in a [1:N] matrix
+
+  # first line of d 
   if(type_z_min == 1) {                   # Dirichlet conditions
     d[1] <- d[1] + aa[2]*C_z_min  
   } else if(type_z_min == 2) {            # von Neumann conditions
@@ -122,8 +121,10 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z,
     m_z_max <- C_z_max                    # remember, m_z_max=C_z_max
     d[N] <- d[N] + 2/3*delta_z*cc[N_grid-1]*m_z_max
   }
+  # turn the [1:N] matrix into a [N:N] matrix with the first and N th rows with adjusted values
+  d <- matrix(d, nrow=length(d), ncol=length(d), byrow = FALSE)
   
-  e = A*d;
+  e <- A %*% d
   # ----------------------------------------
   
   # return

@@ -2,4 +2,4 @@
 # ------ make row vector -------
 make_row_vector <- function(z) {
    matrix(z, nrow = 1)
- }
+}
