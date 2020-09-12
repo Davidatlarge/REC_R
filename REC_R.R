@@ -1,4 +1,8 @@
-REC <- function(
+
+####################################################
+####################### args #######################
+####################################################
+
   # enter data
   # ------ read concentrations ----------------
   z_data <- read.table("REC_v3.1_kit/matlab_code_no_GUI/test_case_2_data_delta/test_case_2_data_delta_C.txt")[,1]
@@ -25,24 +29,39 @@ REC <- function(
   #error
   ###################
   #setup_name = 'test_case_2_data_delta', # REQUIRED FOR READING IN DATA; REPLACE WITH DIRECT DATA VARIABLE INPUT # Name of setup and name of the data folder
-  N_c = 101,      # Number of computational grid points
-  C_water = 25e3, # Nutrient concentration in water column (only important for irrigation)
+  N_c = 101      # Number of computational grid points
+  C_water = 25e3 # Nutrient concentration in water column (only important for irrigation)
   # parameters for tikhonov regularisation
-  lambda = 1,     # 'smoothing' parameter lambda
-  alpha_min = 4, # lowest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_min) )
-  alpha_max = 15, # largest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_max) )
-  N_alpha = 501,  # Number of ratio criterion evaluations in the alpha interval, to find the minimum
+  lambda = 1     # 'smoothing' parameter lambda
+  alpha_min = 4 # lowest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_min) )
+  alpha_max = 15 # largest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_max) )
+  N_alpha = 501  # Number of ratio criterion evaluations in the alpha interval, to find the minimum
   # setting the boundary conditions for the nutrient concentration
-  bnd_cond.type_z_min = 1,    # type of boundary condition at the top: 1: for concentration / 2: for derivative
-  bnd_cond.C_z_min = 25.0e3,  # value of nutrient concentration or derivative at top
-  bnd_cond.type_z_max = 1,    # type of boundary condition at the bottom: 1: for concentration / 2: for derivative
-  bnd_cond.C_z_max = 5.0e3,   # value of nutrient concentration or derivative at bottom
+  bnd_cond.type_z_min = 1    # type of boundary condition at the top: 1: for concentration / 2: for derivative
+  bnd_cond.C_z_min = 25.0e3  # value of nutrient concentration or derivative at top
+  bnd_cond.type_z_max = 1    # type of boundary condition at the bottom: 1: for concentration / 2: for derivative
+  bnd_cond.C_z_max = 5.0e3   # value of nutrient concentration or derivative at bottom
   
   integrate_rates_afterwards = 1  # if you want to integrate the obtained rate over a choosen interval
   # 0: no  / 1: yes
-) {
+  
+####################################################
+####################### fun start ##################
+####################################################
+  
   # ========= define required functions ===============
-  source()
+  source("calculate_con_rates_lin_sys_tichonov_mean_rate_2.R")
+  source("make_column_vector.R")
+  source("make_row_vector.R")
+  source("calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff.R")
+  source("read_bnd_cond_structure.R")
+  source("abl_1.R")
+  source("calculate_B_matrix.R")
+  source("find_mean_rate.R")
+  source("determine_con_and_rate.R")
+  source("optimal_ticho_parameter_quotientenkriterium.R")
+  source("abl_1_non_aequi.R")
+  source("find_local_minimum_with_smallest_x.R")
   # =========================================================================
   
   # =========== some pre - operations ======================================
@@ -66,7 +85,7 @@ REC <- function(
     
   # ========= Determine Concentration and Rates =============================
   con_rate <- calculate_con_rates_lin_sys_tichonov_mean_rate_2(C_water,
-                                                               bnd_cond,
+                                                               #bnd_cond, #OBSOLETE
                                                                alpha_ticho,
                                                                l_0,
                                                                l_1,
@@ -108,4 +127,7 @@ REC <- function(
     integrate_rates(R_out, z_c, setup_name) # this writes the fluxes directly to a file 
   }
   # ============================================
-}
+  
+  ####################################################
+  ####################### fun end ####################
+  ####################################################
