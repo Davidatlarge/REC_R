@@ -121,10 +121,8 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z = z_
     m_z_max <- C_z_max                    # remember, m_z_max=C_z_max
     d[N] <- d[N] + 2/3*delta_z*cc[N_grid-1]*m_z_max
   }
-  # turn the [1:N] matrix into a [N:N] matrix with the first and N th rows with adjusted values
-  d <- matrix(d, nrow=length(d), ncol=length(d), byrow = FALSE)
   
-  e <- A %*% d
+  e <- A %*% matrix(d, nrow=length(d), ncol=length(d), byrow = FALSE) # repeat the [1:N] matrix 'C_c_red' N times to make it an [N:N] matrix
   # ----------------------------------------
   
   # return
