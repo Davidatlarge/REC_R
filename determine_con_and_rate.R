@@ -18,7 +18,7 @@ determine_con_and_rate <- function(delta_z,
   
   # ------ finding total nutrient concentration  ---
   C_tilde <- A %*% R_tilde
-  C_hat_r <- C_tilde + matrix(C_mean, nrow=length(C_mean), ncol=length(C_mean), byrow=FALSE) # repeat the [1:N] matrix 'C_c_red' N times to make it an [N:N] matrix
+  C_hat_r <- C_tilde + C_mean
   C_r <- C_hat_r - e
   
   # top boundary condition
@@ -45,7 +45,7 @@ determine_con_and_rate <- function(delta_z,
   # -------------------------------------------------
   
   # -- finding total rate --------------------------
-  R_red <- R_tilde + matrix(R_mean, nrow=length(R_mean), ncol=length(R_mean), byrow=FALSE) # repeat the [1:N] matrix 'C_c_red' N times to make it an [N:N] matrix
+  R_red <- R_tilde + R_mean 
   R_c <- matrix( c(R_red[1], R_red, R_red[length(R_red)]) ) # matlab code: R_c = [R_red(1) ; R_red ; R_red(end)]
   # ------------------------------------------------
   
