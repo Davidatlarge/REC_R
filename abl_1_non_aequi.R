@@ -1,7 +1,7 @@
-# calcualtes the first derivative of function f(s) 
-# on a non aequidistant grid
-abl_1_non_aequi <- function(f,
-                            s
+# calculates the first derivative of function f(s) 
+# on a non equidistant grid
+abl_1_non_aequi <- function(f = -quot_crit,
+                            s = alpha_ticho
 ) {
   n <- length(f)
   
@@ -16,7 +16,7 @@ abl_1_non_aequi <- function(f,
   # ---------------------------------------
   
   #------------ interior grid points ---------------------
-  for(i in 2:n-1) {
+  for(i in 2:(n-1)) {
     if(!exists("f_abl")) {f_abl <- numeric(0)}
     a <- -delta[i+1] / ( delta[i] * (delta[i] + delta[i+1]) )
     b <- (delta[i+1] - delta[i]) / (delta[i] * delta[i+1])
