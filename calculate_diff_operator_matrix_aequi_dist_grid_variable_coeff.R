@@ -7,11 +7,11 @@
 # For the first derivative term, a blended scheme according to Boudreau is
 # used. For the second derivative term, a central difference scheme is used.
 
-calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # PROBALY z_c
+calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # =z_c
                                                                           D,
                                                                           omega,
                                                                           beta,
-                                                                          por, # MAYBE phi ??????
+                                                                          por, # =phi
                                                                           C_water#,
                                                                           #bnd_cond # OBSOLETE
 ) {
@@ -105,6 +105,7 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # P
   
   # ------- Constructing e -----------------
   d <- -C_water * t(beta2[2:(N_grid-1)])  # results in a [1:N] matrix
+  d <- make_column_vector(d)              # turn into [N,1] 1-column matrix for multiplication with A
 
   # first line of d 
   if(type_z_min == 1) {                   # Dirichlet conditions
@@ -122,7 +123,7 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # P
     d[N] <- d[N] + 2/3*delta_z*cc[N_grid-1]*m_z_max
   }
   
-  e <- A %*% matrix(d, nrow=length(d), ncol=length(d), byrow = FALSE) # repeat the [1:N] matrix 'C_c_red' N times to make it an [N:N] matrix
+  e <- A %*% d
   # ----------------------------------------
   
   # return
