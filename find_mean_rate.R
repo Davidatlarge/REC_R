@@ -2,9 +2,9 @@
 find_mean_rate <- function(A,
                            C_hat
 ) {
-  N_red <- length(C_hat)
+  N_red <- max(dim(C_hat)) # matlab was length(C_hat): For arrays with more dimensions, the length is max(size(X)).
   
-  E <- matlab::ones(N_red, 1)
+  E <- matlab::ones(N_red, N_red) # using ones(N_red, N_red) instead of ones(N_red, 1) (original) to facilitate multiplication with A
   M <- A %*% E 
   
   R_c <- 1 / (t(M) %*% M) %*% (t(M) %*% C_hat)
