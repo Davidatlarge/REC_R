@@ -1,8 +1,8 @@
 # Function to find local minima
-# It returns that local minimum witht the smallest x 
+# It returns that local minimum with the smallest x 
 
-find_local_minimum_with_smallest_x <- function (f,
-                                                x
+find_local_minimum_with_smallest_x <- function (f = -quot_crit,
+                                                x = alpha_ticho
 ) {
   # ------ estimation of first derivative ----
   f_abl <- abl_1_non_aequi(f, x)
@@ -25,15 +25,19 @@ find_local_minimum_with_smallest_x <- function (f,
     sign_old <- sign_new
   } 
   
-  if(counter >= 1) {
-  "  [x_min, ind] = min(x_min_vec) # i think this finds the min and the index of min, lich using which.min()
-    [x_min, ind] = max(x_min_vec) "
+  if(counter >= 1) { # at least one local minimum was found by the preceding for loop
+    x_min <- min(x_min_vec)
+    ind <- which.min(x_min_vec)
+    # matlab code: "[x_min, ind] = min(x_min_vec)"
+    x_min <- max(x_min_vec)
+    ind <- which.max(x_min_vec)
+    # matlab code:  "[x_min, ind] = max(x_min_vec) "
     ind_min <- index_vec[ind]
-    found <- 1
-  } else {
+    found <- 1 # TRUE
+  } else { # no local minimum was found
     x_min <- NaN
-    ind_min <- []
-    found <- 0
+    ind_min <- matrix()
+    found <- 0 # FALSE
   }
   
   list("x_min" = x_min,
