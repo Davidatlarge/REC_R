@@ -17,6 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## TODO
 - change definition of an object `F` because it could be mistaken for `FALSE`  
+- generally make nicer names for objects  
 - remove the need for `read_bnd_cond_structure()` since it is anyways only a renaming, e.g. in   `calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff()`.  
 - calculate the fluxes in the main fun, now they are calculated only when written to file by `write_fluxes()`, or make the output so that the fluxes can be calculated by another fun from the output.  
 - calculate integrated fluxes in the main fun, now they are calculated only when written to file by `integrate_rates()`, or make the output so that the fluxes can be calculated by another fun from the output.  

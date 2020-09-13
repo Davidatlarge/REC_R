@@ -103,11 +103,14 @@
   # =========================================================================
   
   # ======= graphical output of the results ===========
-  # to be done
-  
   # printing the figure to the setup folder
   # i.e. saving a file of the plot (jpg)
   # OBSOLETE
+  library(tidyverse)
+  ggplot() +
+    geom_point(aes(x = z_data, y = C_data)) +
+    geom_line(aes(x = z_c, y = C_out), size =1.5, col = "green") +
+    coord_flip() + scale_x_reverse(name = "sediment depth") + ylab("concentration") + theme_bw()
   
   # ========= write to output file ======================
   # OBSOLETE results should be put into an r object, probably a list of results, for direct work in r
