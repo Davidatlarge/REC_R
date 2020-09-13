@@ -24,6 +24,7 @@ knitr::opts_chunk$set(echo = TRUE)
 - but a name should be definable somewhere   
 - make the result a list of result objects rather than writing them to file directly  
 - make graphic output optional (if slow)  
+- make graphic output a base plot with fixed dims
 - check where matrix multiplication is needed  
 - check which functions can be used from `matlab::` just to make sure   
 - bring back the figure printing? 
