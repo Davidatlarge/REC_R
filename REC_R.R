@@ -99,7 +99,7 @@
   R_out <- con_rate$R_out
   C_out <- con_rate$C_out
   alpha_opt <- con_rate$alpha_opt
-    
+  
   # =========================================================================
   
   # ======= graphical output of the results ===========
@@ -109,25 +109,24 @@
   library(tidyverse)
   ggplot() +
     geom_point(aes(x = z_data, y = C_data)) +
-    geom_line(aes(x = z_c, y = C_out), size =1.5, col = "green") +
+    geom_line(aes(x = z_c, y = C_out), size = 1, col = "green") +
     coord_flip() + scale_x_reverse(name = "sediment depth") + ylab("concentration") + theme_bw()
   
   # ========= write to output file ======================
+  # of setup_name, R_out, C_out, z_c
   # OBSOLETE results should be put into an r object, probably a list of results, for direct work in r
-  # define write_results()?
-  # of setup_name, # obsolete, but a name should be definable somewhere
-  # R_out, 
-  # C_out, 
-  # z_c # where it this? - goes into calculate_con_rates_lin_sys_tichonov_mean_rate_2()
+  # write_results() is defined but obsolete
   # =====================================================
   
   # ========= calculate fluxes about the interval interfaces =====
-  write_fluxes(setup_name,C_out,z_c,omega,D_total,phi) # this calculates fluxes but writes them directly to file
+  # this calculates fluxes but writes them directly to file
+  write_fluxes(setup_name,C_out,z_c,omega,D_total,phi) 
   # ===============================================================
   
   # ======== integrate the rate function =======
+  # this writes the fluxes directly to a file
   if(integrate_rates_afterwards == 1) {
-    integrate_rates(R_out, z_c, setup_name) # this writes the fluxes directly to a file 
+    integrate_rates(R_out, z_c, setup_name)  
   }
   # ============================================
   

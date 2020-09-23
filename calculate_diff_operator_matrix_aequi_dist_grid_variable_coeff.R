@@ -38,15 +38,18 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # =
   # ---------------------------------------
   
   # ------ construct coefficient vectors r(z) and s(z) -----
-  omega2 <- omega * por # element-wise multiplication is via "*" in r but ".*" in matlab
+  # element-wise multiplication is via "*" in r but ".*" in matlab
+  # this for is correct; omega2 D2 and beta2 need to be a vector 
+  # but with %*% it would become a scalar
+  omega2 <- omega * por 
   D2 <- D * por
   beta2 <- beta * por
   
   D2_abl <- abl_1(D2, z) # requires defining abl_1()
   omega2_abl <- abl_1(omega2, z) # requires defining abl_1()
   
-  r <- omega2_abl + beta2
-  s <- omega2 - D2_abl
+  r <- omega2_abl + beta2 # vector addition is element-wise in both matlab and R
+  s <- omega2 - D2_abl # so is subtraction
   # -----------------------------------------------------
   
   # ----- construct blending factor sigma ---------------
@@ -62,14 +65,14 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # =
   # -------------------------------------------------------
   
   # -------- construct the matrix coefficients ------------
-  aa <- -(1+sig) * s/(2*delta_z) - D2/(delta_z)^2
-  bb <- r + s * sig/delta_z + 2*D2/(delta_z)^2
-  cc <- (1-sig) * s/(2*delta_z) - D2/(delta_z)^2
+  aa <- -(1+sig) * s / (2*delta_z) - D2 / (delta_z)^2
+  bb <- r + s * sig / delta_z + 2*D2 / (delta_z)^2
+  cc <- (1-sig) * s / (2*delta_z) - D2 / (delta_z)^2
   # -------------------------------------------------------
   
   # ----- Construction of the forward Diff_op -------------------------
   Diff_op <- matlab::zeros(N, N)
-  for(i in 2:N-1) {  
+  for(i in 2:(N-1)) {  
     Diff_op[i, i-1] <- aa[i+1]
     Diff_op[i,i]   <- bb[i+1]
     Diff_op[i,i+1] <- cc[i+1]

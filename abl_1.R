@@ -8,7 +8,7 @@ abl_1 <- function(
   n <- length(f)
   
   #------------ central 4th order -------------------------------------
-  for(i in 2:n-1) {
+  for(i in 2:(n-1)) {
     if(!exists("f_abl")) {f_abl <- numeric(0)}
     if(i == 2) {
       f_abl[i] <- (-2*f[i-1] - 3*f[i] + 6*f[i+1] - f[i+2]) / (6*delta)
