@@ -35,12 +35,12 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   A_e_F_d <- calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff(z_c, D_total, omega, beta, phi, C_water#, 
                                                                            #bnd_cond # OBSOLETE
                                                                            )
-  A <- A_e_F_d$A
+  A <- A_e_F_d$A # a matrix
   e <- A_e_F_d$e
-  #F <- A_e_F_d$Diff_op # not used again in this function
+  #F <- A_e_F_d$Diff_op # a matrix # not used again in this function
   #d <- A_e_F_d$d # not used again in this function
   
-  A_ad <- t(A)
+  A_ad <- t(A) # a matrix
 
   B_L0_L1_L2 <- calculate_B_matrix(l_0, l_1, l_2, N_red, z_c_red)
   B <- B_L0_L1_L2$B
@@ -50,15 +50,15 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   
   print ('ready with Tichonov - Matrices: A and B')
   
-  C_hat <- C_c_red + e
+  C_hat <- C_c_red + e # C_c_red is a column vector, e is a matrix
   # ----------------------------------------------
   
   
   # --------- finding the mean rate and respective concentration ------
   mean_rate <- find_mean_rate(A, C_hat)
-  R_mean <- mean_rate$R_mean
-  C_mean <- mean_rate$C_mean
-  C_tilde <- C_hat - C_mean
+  R_mean <- mean_rate$R_mean # a 1-column matrix
+  C_mean <- mean_rate$C_mean # a 1-column matrix
+  C_tilde <- C_hat - C_mean # C_hat is a matrix, C_mean is a 1-column matrix
   # --------------------------------------------------------------------
   
   # -------- Estimating the best alpha Parameter -----------------------
@@ -68,13 +68,14 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
     
     # ------- finding the tichonov solution --------  	
     R_tilde <- pracma::inv(A_ad %*% A + alpha * B) %*% A_ad %*% C_tilde	
+    # A_ad is a matrix, A is a matrix, alpha is a scalar, B is a matrix, C_tilde is a 1-column matrix
     # ----------------------------------------------
     
     # ------- constructing the final solution -------
     con_rate <- determine_con_and_rate(delta_z, R_tilde, A, e, R_mean, C_mean
                                        #, bnd_cond # OBSOLETE
     )
-    if(k == 1) {
+    if(k == 1) { # binding rows
       R_tich_c_m <- con_rate$R_c
       C_tich_c_m <- con_rate$C_c
     } else if(k > 1){
@@ -87,7 +88,7 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
     # -------- calculate Tichonov-optimal parameter function -------
     OTPQ <- optimal_ticho_parameter_quotientenkriterium(R_tilde, C_tilde, B, A, alpha)
     
-    if(k == 1) {
+    if(k == 1) { # combining scalars to vector
       quot_crit <- OTPQ
     } else if(k > 1){
       quot_crit <- append(quot_crit, OTPQ)

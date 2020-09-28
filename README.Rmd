@@ -43,6 +43,7 @@ At the moment providing the inputs, pre-processing and calling the function `cal
 - `E` in `find mean rates` seems obsolete  
 - change `print()` to `cat()`  
 - unify use of `"` vs `'`  
+- unify use of 'Tikhonov' and 'Tichonov' (only in commented text)
 
 
 ## Planned functional changes 
@@ -69,6 +70,8 @@ At the moment providing the inputs, pre-processing and calling the function `cal
 
 - calculations inside `abl_1()` should be correct because they are easy to understand and only single values are ever multiplied or added and hence matrix calculation play no role  
 
+- gone thru `find_mean_rate`, should be ok  
+- gone thru `calculate_con_rates_lin_sys_tichonov_mean_rate_2`, should be ok  
 
 ## a note on data input files
 The function `read_input_data_func()` just reads in the data one by one, extracting from the concentration file the concentration and depth vectors, interpolating data to fit the number of grid points supplied in the top function.
