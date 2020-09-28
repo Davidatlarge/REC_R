@@ -20,8 +20,8 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   C_scal <- max(C_c)
   C_c <- C_c / C_scal
   C_water <- C_water / C_scal
-  bnd_cond.C_z_min <- bnd_cond.C_z_min / C_scal
-  bnd_cond.C_z_max <- bnd_cond.C_z_max / C_scal
+  #bnd_cond.C_z_min <- bnd_cond.C_z_min / C_scal # not used again in this function
+  #bnd_cond.C_z_max <- bnd_cond.C_z_max / C_scal # not used again in this function
   
   print('Starting Tichonov - Regularization')
   # ------- some pre-calculations ------
@@ -37,16 +37,16 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
                                                                            )
   A <- A_e_F_d$A
   e <- A_e_F_d$e
-  F <- A_e_F_d$Diff_op
-  d <- A_e_F_d$d
+  #F <- A_e_F_d$Diff_op # not used again in this function
+  #d <- A_e_F_d$d # not used again in this function
   
   A_ad <- t(A)
 
   B_L0_L1_L2 <- calculate_B_matrix(l_0, l_1, l_2, N_red, z_c_red)
   B <- B_L0_L1_L2$B
-  L0 <- B_L0_L1_L2$L0
-  L1 <- B_L0_L1_L2$L1
-  L2 <- B_L0_L1_L2$L2
+  #L0 <- B_L0_L1_L2$L0 # not used again in this function
+  #L1 <- B_L0_L1_L2$L1 # not used again in this function
+  #L2 <- B_L0_L1_L2$L2 # not used again in this function
   
   print ('ready with Tichonov - Matrices: A and B')
   
@@ -98,12 +98,12 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   
   # ------ finding the minima of the criteria functions --        
   locmin <- find_local_minimum_with_smallest_x(-quot_crit, alpha_ticho)
-  mini <- locmin$x_min
+  #mini <- locmin$x_min # not used again in this function
   index <- locmin$ind_min
   found <- locmin$found
   
   if(found == 0) {# no local minimum
-    mini <- min(-quot_crit)
+    #mini <- min(-quot_crit) # not used again in this function
     index <- which.min(-quot_crit)
   } 
   
@@ -116,8 +116,8 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   # ------------------------------------------------------------------------
   
   # -------- re-scaling the data ------------
-  C_out <- C_out * C_scal
-  R_out <- R_out * C_scal
+  C_out <- C_out * C_scal # C_out is a Vector, C_scal is a Scalar
+  R_out <- R_out * C_scal # R_out is a Vector, C_scal is a Scalar
   # -------------------------------------
   
   # return
