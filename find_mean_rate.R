@@ -14,8 +14,10 @@ find_mean_rate <- function(A,
   C_mean <- A %*% R_mean # A is a square matrix, R_mean is a 1-column matrix, C_mean is a 1-column matrix
   
   # return
-  list("R_mean" = R_mean, # R_mean is a 1-column matrix
+  mean_rate <- list("R_mean" = R_mean, # R_mean is a 1-column matrix
        "C_mean" = C_mean) # C_mean is a 1-column matrix
+  
+  return(mean_rate)
 }
 
 # expected output: [R_mean,C_mean]

@@ -55,8 +55,10 @@ determine_con_and_rate <- function(delta_z,
   # ------------------------------------------
   
   #return
-  list("R_c" = R_c,
+  con_rate <- list("R_c" = R_c,
        "C_c" = C_c)
+  
+  return(con_rate)
 }
 
 # expected output: R_c, C_c 

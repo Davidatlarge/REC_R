@@ -130,12 +130,14 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # =
   # ----------------------------------------
   
   # return
-  list(
+  diff_op_matrix <- list(
     "A" = A,
     "e" = e,
     "Diff_op" = Diff_op,
     "d" = d
   )
+  
+  return(diff_op_matrix)
   # -----------------------------------------
   
 }

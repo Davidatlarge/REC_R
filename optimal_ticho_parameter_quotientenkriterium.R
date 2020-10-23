@@ -20,5 +20,6 @@ optimal_ticho_parameter_quotientenkriterium <- function(R_tilde,
   quot <- norm( A%*%(alpha*ablei)-res, type =  "2" ) / norm( res, type = "2" ) 
   # using type = "2" specifies the “spectral” or 2-norm, which is the largest singular value (svd) of x. 
   # in matlab norm() returns the 2-norm or maximum singular value of matrix X, which is approximately max(svd(X))
+  return(quot)
 }
 # expected output: quot 

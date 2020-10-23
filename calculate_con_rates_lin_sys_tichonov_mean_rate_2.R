@@ -122,9 +122,11 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   # -------------------------------------
   
   # return
-  list("R_out" = R_out,
+  con_rate_mean <- list("R_out" = R_out,
        "C_out" = C_out,
        "alpha_opt" = alpha_opt)
+  
+  return(con_rate_mean)
   
 }
 

@@ -41,12 +41,14 @@ calculate_B_matrix <- function(lam_0, # =l_0
   B <- lam_0*t(L0)%*%L0 + lam_1*t(L1)%*%L1 + lam_2*t(L2)%*%L2
   # -----------------------------------------------
   # return
-  list(
+  bmatrix <- list(
     "B" = B,
     "L0" = L0,
     "L1" = L1,
     "L2" = L2
   )
+  
+  return(bmatrix)
 }
 
 # expected output:  [B,L0,L1,L2]

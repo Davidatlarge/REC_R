@@ -22,6 +22,9 @@ operate_property <- function(file_name_in,
     error <- 1.0
   }
   
+  props <- list(z_c, f_c, error)
+  
+  return(props)
 }
 
 # expected output: [z_c,f_c,error]

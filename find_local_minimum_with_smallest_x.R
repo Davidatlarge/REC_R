@@ -40,9 +40,11 @@ find_local_minimum_with_smallest_x <- function (f = -quot_crit,
     found <- 0 # FALSE
   }
   
-  list("x_min" = x_min,
+  local_min <- list("x_min" = x_min,
        "ind_min" = ind_min,
        "found" = found)
+  
+  return(local_min)
 }
 
 # expected output: [x_min,ind_min,found]
