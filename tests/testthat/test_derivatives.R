@@ -33,4 +33,5 @@ test_that("abl_1_non_aequi fails with non-numeric input.", {
 test_that("abl_1_non_aequi computes the first derivative on a non equidistant grid.", {
   x <- sample(1:100, 80) %>% sort()
   expect_equal(abl_1_non_aequi(f = (x)^2, s = x), 2 * (x))
+  #expect_equal(abl_1_non_aequi(f = x^3, s = x), 3 * x^2)
 })
