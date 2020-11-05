@@ -110,6 +110,8 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   
   print('finding optimal alpha with ratio criterion')        
   alpha_opt <- alpha_ticho[index]
+  plot(alpha_ticho, -quot_crit, log = "x", type = "l")
+  points(alpha_opt, -quot_crit[index], col = "red")
   print(paste('optimal alpha for Tichonov - Regularization:\n', alpha_opt))
   
   R_out <- R_tich_c_m[index,]
