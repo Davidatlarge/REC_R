@@ -9,11 +9,17 @@ determine_con_and_rate <- function(delta_z,
                                    #bnd_cond # OBSOLETE
 ) {
   # ------ reading the boundary conditions structure ----
-  bnd_cond_str <- read_bnd_cond_structure()
-  C_z_min <- bnd_cond_str$C_z_min
-  C_z_max <- bnd_cond_str$C_z_max
-  type_z_min <- bnd_cond_str$type_z_min
-  type_z_max <- bnd_cond_str$type_z_max
+  ### Comment Marko: there seems to be no need for such an overcomplicated way of renaming a variable...
+  #bnd_cond_str <- read_bnd_cond_structure() ### Comment Marko: This function is useless?!
+  # C_z_min <- bnd_cond_str$C_z_min
+  # C_z_max <- bnd_cond_str$C_z_max
+  # type_z_min <- bnd_cond_str$type_z_min
+  # type_z_max <- bnd_cond_str$type_z_max
+  
+  C_z_min <- bnd_cond.C_z_min
+  C_z_max <- bnd_cond.C_z_max
+  type_z_min <- bnd_cond.type_z_min
+  type_z_max <- bnd_cond.type_z_max
   # -----------------------------------------------------
   
   # ------ finding total nutrient concentration  ---
