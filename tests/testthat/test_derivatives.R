@@ -1,5 +1,8 @@
 context("derivatives functions")
 
+source("../../abl_1.R")
+source("../../abl_1_non_aequi.R")
+
 test_that("abl_1 fails with missing argumemts.", {
   expect_error(abl_1())
   expect_error(abl_1(f = 1:10))

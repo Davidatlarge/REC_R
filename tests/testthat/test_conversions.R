@@ -1,5 +1,8 @@
 context("conversion functions")
 
+source("../../make_column_vector.R")
+source("../../make_row_vector.R")
+
 test_that("make_column_vector() makes a 1D matrix with n rows", {
   vec <- 1:10
   expect_is(make_column_vector(vec), class = "matrix")
