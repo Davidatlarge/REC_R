@@ -7,10 +7,13 @@ find_mean_rate <- function(A,
   E <- matlab::ones(N_red, 1)
   M <- A %*% E # A is a square matrix, E is a 1-column matrix, so M is basically rowsums of A
   
+  ### Comment Marko: The following line reduces a long vector of numbers to a single value which appears to become the "mean rate", constant with depth...
   R_c <- 1 / (t(M) %*% M) %*% (t(M) %*% C_hat)
+  ### Comment Marko: The following line is nothing more than rep(R_c, N_red), so that R_mean (the mean rate ?!) must always be constant over depth!?! That feels very wrong!!
   R_mean <- as.numeric(R_c) * matlab::ones(N_red, 1) # to perform multiplication of single-value R_c with each element of the ones matrix R_c must be numeric
   # in matlab "if one of A or B is a scalar, then the scalar is combined with each element of the other array"
   
+  ### Comment Marko: this leads to negative concentrations with test_case_2-data!!:
   C_mean <- A %*% R_mean # A is a square matrix, R_mean is a 1-column matrix, C_mean is a 1-column matrix
   
   # return
