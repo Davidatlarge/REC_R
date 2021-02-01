@@ -5,27 +5,27 @@
 
   # enter data
   # ------ read concentrations ----------------
-  z_data <- read.table("REC_v3.1_kit/matlab_code_no_GUI/test_case_2_data_delta/test_case_2_data_delta_C.txt")[,1]
-  C_data <- read.table("REC_v3.1_kit/matlab_code_no_GUI/test_case_2_data_delta/test_case_2_data_delta_C.txt")[,2]
+  z_data <- read.table("test_case_2_data_delta/test_case_2_data_delta_C.txt")[,1]
+  C_data <- read.table("test_case_2_data_delta/test_case_2_data_delta_C.txt")[,2]
   # ---------- porosity ---------------------
-  #z_phi <- read.table("REC_v3.1_kit/matlab_code_no_GUI/test_case_2_data_delta/test_case_2_data_delta_phi.txt")[,1]
-  phi <- read.table("REC_v3.1_kit/matlab_code_no_GUI/test_case_2_data_delta/test_case_2_data_delta_phi.txt")[,2]
+  #z_phi <- read.table("test_case_2_data_delta/test_case_2_data_delta_phi.txt")[,1]
+  phi <- read.table("test_case_2_data_delta/test_case_2_data_delta_phi.txt")[,2]
   #error
   ## ---------- vertikal velocity ---------------------
-  #z_omega <- read.table("REC_v3.1_kit/matlab_code_no_GUI/test_case_2_data_delta/test_case_2_data_delta_omega.txt")[,1]
-  omega <- read.table("REC_v3.1_kit/matlab_code_no_GUI/test_case_2_data_delta/test_case_2_data_delta_omega.txt")[,2]
+  #z_omega <- read.table("test_case_2_data_delta/test_case_2_data_delta_omega.txt")[,1]
+  omega <- read.table("test_case_2_data_delta/test_case_2_data_delta_omega.txt")[,2]
   #error
   ## ---------- Bioirigation ---------------------
-  #z_beta <- read.table("REC_v3.1_kit/matlab_code_no_GUI/test_case_2_data_delta/test_case_2_data_delta_beta.txt")[,1]
-  beta <- read.table("REC_v3.1_kit/matlab_code_no_GUI/test_case_2_data_delta/test_case_2_data_delta_beta.txt")[,2]
+  #z_beta <- read.table("test_case_2_data_delta/test_case_2_data_delta_beta.txt")[,1]
+  beta <- read.table("test_case_2_data_delta/test_case_2_data_delta_beta.txt")[,2]
   #error
   ## ---------- D ---------------------
-  #z_D <- read.table("REC_v3.1_kit/matlab_code_no_GUI/test_case_2_data_delta/test_case_2_data_delta_D.txt")[,1]
-  D <- read.table("REC_v3.1_kit/matlab_code_no_GUI/test_case_2_data_delta/test_case_2_data_delta_D.txt")[,2]
+  #z_D <- read.table("test_case_2_data_delta/test_case_2_data_delta_D.txt")[,1]
+  D <- read.table("test_case_2_data_delta/test_case_2_data_delta_D.txt")[,2]
   #error
   ## ---------- D_b ---------------------
-  #z_D_b <- read.table("REC_v3.1_kit/matlab_code_no_GUI/test_case_2_data_delta/test_case_2_data_delta_Db.txt")[,1]
-  D_b <- read.table("REC_v3.1_kit/matlab_code_no_GUI/test_case_2_data_delta/test_case_2_data_delta_Db.txt")[,2]
+  #z_D_b <- read.table("test_case_2_data_delta/test_case_2_data_delta_Db.txt")[,1]
+  D_b <- read.table("test_case_2_data_delta/test_case_2_data_delta_Db.txt")[,2]
   #error
   ###################
   #setup_name = 'test_case_2_data_delta', # REQUIRED FOR READING IN DATA; REPLACE WITH DIRECT DATA VARIABLE INPUT # Name of setup and name of the data folder
@@ -33,9 +33,9 @@
   C_water = 25e3 # Nutrient concentration in water column (only important for irrigation)
   # parameters for tikhonov regularisation
   lambda = 1     # 'smoothing' parameter lambda
-  alpha_min = 4 # lowest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_min) )
+  alpha_min = 8 # lowest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_min) )
   alpha_max = 15 # largest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_max) )
-  N_alpha = 501  # Number of ratio criterion evaluations in the alpha interval, to find the minimum
+  N_alpha = 301  # Number of ratio criterion evaluations in the alpha interval, to find the minimum
   # setting the boundary conditions for the nutrient concentration
   bnd_cond.type_z_min = 1    # type of boundary condition at the top: 1: for concentration / 2: for derivative
   bnd_cond.C_z_min = 25.0e3  # value of nutrient concentration or derivative at top
@@ -81,6 +81,26 @@
   D       <- pracma::interp1(z_data, D, xi = z_c, method = "linear")
   D_b     <- pracma::interp1(z_data, D_b, xi = z_c, method = "linear")
   D_total <- D + D_b # total diffusivity
+  
+  library(tidyverse)
+  data.frame(depth = z_c, 
+             C = C_c, 
+             phi = phi,
+             omega = omega,
+             beta = beta,
+             D = D,
+             D_b = D_b#,
+             #D_total = D_total
+             ) %>%
+    pivot_longer(-depth) %>%
+    ggplot() +
+    aes(x = depth, y = value) +
+    geom_point() +
+    coord_flip() +
+    scale_x_reverse() +
+    facet_wrap(~name, ncol = 3, scales = "free_x") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
   # =========================================================================
     
   # ========= Determine Concentration and Rates =============================
@@ -106,11 +126,14 @@
   # printing the figure to the setup folder
   # i.e. saving a file of the plot (jpg)
   # OBSOLETE
-  library(tidyverse)
+  
   ggplot() +
     geom_point(aes(x = z_data, y = C_data)) +
     geom_line(aes(x = z_c, y = C_out), size = 1, col = "green") +
-    coord_flip() + scale_x_reverse(name = "sediment depth") + ylab("concentration") + theme_bw()
+    coord_flip() + 
+    scale_x_reverse(name = "sediment depth") + 
+    ylab("concentration") + 
+    theme_bw()
   
   # ========= write to output file ======================
   # of setup_name, R_out, C_out, z_c

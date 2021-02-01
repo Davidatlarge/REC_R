@@ -17,6 +17,7 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   phi           # from reading input files
 ) {
   # -------- scaling the data ------------
+  ### Comment Marko: the following two lines should be replaced by something like C_scaled <- scale(C_c); C_c should not be overwritten...
   C_scal <- max(C_c)
   C_c <- C_c / C_scal
   C_water <- C_water / C_scal
@@ -32,7 +33,12 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   delta_z <- z_c[2] - z_c[1]
   
   # ----- Calculate the neccessary matrices ------
-  A_e_F_d <- calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff(z_c, D_total, omega, beta, phi, C_water#, 
+  A_e_F_d <- calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff(z = z_c, 
+                                                                           D = D_total, 
+                                                                           omega, 
+                                                                           beta, 
+                                                                           por = phi, 
+                                                                           C_water#, 
                                                                            #bnd_cond # OBSOLETE
                                                                            )
   A <- A_e_F_d$A # a matrix
@@ -42,7 +48,11 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   
   A_ad <- t(A) # a matrix
 
-  B_L0_L1_L2 <- calculate_B_matrix(l_0, l_1, l_2, N_red, z_c_red)
+  B_L0_L1_L2 <- calculate_B_matrix(lam_0 = l_0,
+                                   lam_1 = l_1,
+                                   lam_2 = l_2,
+                                   N_red = N_red,
+                                   z_c = z_c_red)
   B <- B_L0_L1_L2$B
   #L0 <- B_L0_L1_L2$L0 # not used again in this function
   #L1 <- B_L0_L1_L2$L1 # not used again in this function
@@ -61,6 +71,20 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   C_tilde <- C_hat - C_mean # C_hat is a matrix, C_mean is a 1-column matrix
   # --------------------------------------------------------------------
   
+  data.frame(R_mean, 
+             C_mean, 
+             C_tilde
+  ) %>%
+    rownames_to_column() %>%
+    pivot_longer(-rowname) %>%
+    ggplot() +
+    aes(x = as.integer(rowname), y = value) +
+    geom_point() +
+    coord_flip() +
+    scale_x_reverse() +
+    facet_wrap(~name, ncol = 3, scales = "free_x") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  
   # -------- Estimating the best alpha Parameter -----------------------
   for(k in 1:length(alpha_ticho)) {
     
@@ -72,7 +96,12 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
     # ----------------------------------------------
     
     # ------- constructing the final solution -------
-    con_rate <- determine_con_and_rate(delta_z, R_tilde, A, e, R_mean, C_mean
+    con_rate <- determine_con_and_rate(delta_z,
+                                       R_tilde,
+                                       A,
+                                       e,
+                                       R_mean,
+                                       C_mean
                                        #, bnd_cond # OBSOLETE
     )
     if(k == 1) { # binding rows
@@ -110,6 +139,8 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   
   print('finding optimal alpha with ratio criterion')        
   alpha_opt <- alpha_ticho[index]
+  plot(alpha_ticho, -quot_crit, log = "x", type = "l")
+  points(alpha_opt, -quot_crit[index], col = "red")
   print(paste('optimal alpha for Tichonov - Regularization:\n', alpha_opt))
   
   R_out <- R_tich_c_m[index,]
