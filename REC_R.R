@@ -10,6 +10,7 @@ library(pracma)
 library(ggplot2)
 library(scales)
 source( paste(getwd(), "helping_routines", "AA_list_helping_R_routines.R", sep=.Platform$file.sep) )
+source(paste(getwd(), "helping_routines", "import_from_setup.R", sep=.Platform$file.sep))
 # ----------------------------------------------------
 
 ####################################################
@@ -19,6 +20,11 @@ source( paste(getwd(), "helping_routines", "AA_list_helping_R_routines.R", sep=.
 # information for input data
 path_data   <-"c:/users/kaiserd/desktop/Version_Githup_modified_ver_1/test_case_BEIBU/diffusive fluxes/diffusive fluxes by REC/Spring/dry_SYW_NO2/"
 setup_name  <-"dry_SYW_NO2"    # REQUIRED FOR READING IN DATA; REPLACE WITH DIRECT DATA VARIABLE INPUT # Name of setup and name of the data folder
+
+# make one df of input data (now from setup files)
+# I place this here because if data is passed to the function then it would be an argument input to the parent function
+# this import can also work as an option in a later function so that the user either supplies data or a path to the setup
+original_data <- import_from_setup(path_data)
 
 N_c         <- 100      # Number of computational grid points
 C_water     <- 0.5     # Nutrient concentration in water column (only important for irrigation)
@@ -42,7 +48,23 @@ integrate_rates_afterwards <-  0  # if you want to integrate the obtained rate o
 
 
 # =============== read the input data ==========================================
-input_data <- read_input_data_func(path_data,setup_name,N_c) 
+#input_data <- read_input_data_func(path_data,setup_name,N_c) # ORIGINAL 
+
+# make z_c as done by read_input_data_func()
+z_data     <- original_data$z
+z_c        <- matlab::linspace(z_data[1], z_data[length(z_data)], N_c)
+# make input data 
+# this step could be skipped it input_data is not required anywhere else
+# are the list elements .$z_c and .$error used anywhere?
+input_data        <- list(NULL)
+input_data$z_c    <- z_c
+input_data$C_c    <- operate_property("C", z_c)$f_c
+input_data$phi    <- operate_property("phi", z_c)$f_c
+input_data$omega  <- operate_property("omega", z_c)$f_c
+input_data$beta   <- operate_property("beta", z_c)$f_c
+input_data$D      <- operate_property("D", z_c)$f_c
+input_data$D_b    <- operate_property("Db", z_c)$f_c
+
 z_c        <- input_data$z_c
 C_c        <- input_data$C_c
 phi        <- input_data$phi
@@ -98,9 +120,8 @@ alpha_opt <- con_rate$alpha_opt
 
 
 # ======= do a simple plot of the rates ==================================
-old_par <- par()
-
 par(mfrow=c(1,2))
+
 plot(C_out, z_c, col="green", type='l',
 ylab = 'z', ylim = rev(range(z_c)),
 xlab = 'C(z)')

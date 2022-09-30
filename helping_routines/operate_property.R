@@ -1,11 +1,14 @@
 # ---------------------------------------------
-operate_property <- function(file_name_in, z_c) {
+# now operates on a df in the environment instead of re/opening a file
+# accepts a column name on that df in the environment instead of a file path/name
+operate_property <- function(parameter, #c("C", "phi", "omega", "beta", "D", "Db") 
+                                z_c) {
   
   error <- 0
   
   # read the data
-  z_data <- read.table(file_name_in)[,1]
-  f_data <- read.table(file_name_in)[,2]
+  z_data <- original_data$z
+  f_data <- original_data[,parameter]
   
   if(z_data[1] <= z_c[1] & z_data[length(z_data)] >= z_c[length(z_c)]) {
     
