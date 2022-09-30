@@ -1,8 +1,8 @@
 ## example
-rm(list = ls())
 # load data
 source("import_from_setup.R")
 df <- import_from_setup("test_case_2_data_delta/")
+head(df)
 
 # run rec
 source("rec.R")
@@ -30,3 +30,11 @@ plot_rec(test, type = "localmin")
 # calculate boundary fluxes
 source("evaluation_functions/boundary_fluxes.R")
 boundary_fluxes(test)
+
+# calculate integrated rates
+source("evaluation_functions/integrate_rates.R")
+plot(test$output_data$z~test$output_data$rate, 
+     ylim = rev(range(test$output_data$z)), ylab = "z", xlab = "rate")
+abline(h = c(0,30))
+integrate_rates(test)
+integrate_rates(test, 0, 30, explain = FALSE)
