@@ -35,7 +35,7 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   C_c_red <- make_column_vector(C_c_red)
   delta_z <- z_c[2] - z_c[1]
   
-  # ----- Calculate the neccessary matrices ------
+  # ----- Calculate the necessary matrices ------
   A_e_F_d <- calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff(z_c, D_total, omega, beta, phi, C_water, bnd_cond)
   A <- A_e_F_d$A # a matrix
   e <- A_e_F_d$e
@@ -100,19 +100,21 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   # ---------------------------------------------------------------------
   
   # ------ finding the minima of the criteria functions --        
-  locmin <- find_local_minimum_with_smallest_x(-quot_crit, alpha_ticho)
-  #mini <- locmin$x_min # not used again in this function
-  index <- locmin$ind_min
-  found <- locmin$found
-  
-  if(found == 0) {# no local minimum
-    #mini <- min(-quot_crit) # not used again in this function
-    index <- which.min(-quot_crit)
-  } 
+  # locmin <- find_local_minimum_with_smallest_x(-quot_crit, alpha_ticho)
+  # #mini <- locmin$x_min # not used again in this function
+  # index <- locmin$ind_min
+  # found <- locmin$found
+  # 
+  # if(found == 0) {# no local minimum
+  #   #mini <- min(-quot_crit) # not used again in this function
+  #   print("No local minimum of the Tikhonov criterion found. Using absolute minimum. But you can change alpha limits to look for a local minimum.")
+  #   index <- which.min(-quot_crit)
+  # } 
+  index <- find_local_minimum(values = -quot_crit)
   
   print('finding optimal alpha with ratio criterion')        
   alpha_opt <- alpha_ticho[index]
-  print(paste('optimal alpha for Tichonov - Regularization:\n', alpha_opt))
+  print(paste('optimal alpha for Tichonov - Regularization:', alpha_opt))
   
   R_out <- R_tich_c_m[index,]
   C_out <- C_tich_c_m[index,]
@@ -124,11 +126,10 @@ calculate_con_rates_lin_sys_tichonov_mean_rate_2 <- function(
   # -------------------------------------
   
   # return
-  con_rate_mean <- list("R_out"     = R_out,
-                        "C_out"     = C_out,
-                        "alpha_opt" = alpha_opt,
-                        quot_crit = quot_crit,
-                        index = index,
+  con_rate_mean <- list(R_out       = R_out,
+                        C_out       = C_out,
+                        alpha_opt   = alpha_opt,
+                        quot_crit   = quot_crit,
                         alpha_ticho = alpha_ticho)
   
   return(con_rate_mean)
