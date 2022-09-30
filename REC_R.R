@@ -102,41 +102,46 @@ con_rate <- calculate_con_rates_lin_sys_tichonov_mean_rate_2(C_water,
                                                              D_total,
                                                              beta,
                                                              phi)
-R_out     <- con_rate$R_out
-C_out     <- con_rate$C_out
-alpha_opt <- con_rate$alpha_opt
 # =========================================================================
 
+# ======= combine results in an object ==================================
+rec_out <- list(input_data = original_data,
+                input_pars = list(N_c=N_c, C_water=C_water, 
+                                  lambda=lambda, alpha_min=alpha_min, alpha_max=alpha_max, N_alpha=N_alpha, 
+                                  bnd_cond_type_z_min=bnd_cond_type_z_min, bnd_cond_C_z_min=bnd_cond_C_z_min, 
+                                  bnd_cond_type_z_max=bnd_cond_type_z_max, bnd_cond_C_z_max=bnd_cond_C_z_max), 
+                output_data = data.frame(z = z_c, 
+                                         rate = con_rate$R_out, 
+                                         conc = con_rate$C_out),
+                alpha_opt = con_rate$alpha_opt)
 
 # ======= do a simple plot of the rates ==================================
-par(mfrow=c(1,2))
+plot_rec <- function(rec_out){
+  
+  old <- par()$mfrow
+  par(mfrow=c(1,2))
+  
+  plot(rec_out$output_data$conc, rec_out$output_data$z, 
+       col="green", type='l',
+       ylab = 'z', ylim = rev(range(z_c)),
+       xlab = 'C(z)', xlim = c(min(c(rec_out$input_data$C, rec_out$output_data$conc)), 
+                               max(c(rec_out$input_data$C, rec_out$output_data$conc))) )
+  points(rec_out$input_data$C, rec_out$input_data$z)
+  
+  plot(rec_out$output_data$rate, rec_out$output_data$z, 
+       col="red", type='l',
+       ylab ='z', ylim = rev(range(z_c)),
+       xlab = 'R(z)')
+  
+  par(mfrow=old)
+}
 
-plot(C_out, z_c, col="green", type='l',
-ylab = 'z', ylim = rev(range(z_c)),
-xlab = 'C(z)')
-
-plot(R_out, z_c, col="red", type='l',
-ylab ='z', ylim = rev(range(z_c)),
-xlab = 'R(z)')
-
-dev.off()
+plot_rec(rec_out)
 # ========================================================================
 
 
 
-# # ======= graphical output of the results ===========
-# # printing the figure to the setup folder
-# # i.e. saving a file of the plot (jpg)
-# # OBSOLETE
-# library(tidyverse)
-ggplot() +
-  geom_point(aes(x = z_c, y = C_c)) +
-  geom_line(aes(x = z_c, y = C_out), size = 1, col = "green") +
-  coord_flip() + scale_x_reverse(name = "sediment depth") + ylab("rate") + theme_bw()
 
-ggplot() +
-  geom_line(aes(x = z_c, y = R_out), size = 1, col = "red") +
-  coord_flip() + scale_x_reverse(name = "sediment depth") + ylab("concentration") + theme_bw()
 
 # ========= write to output file ======================
 # of setup_name, R_out, C_out, z_c
