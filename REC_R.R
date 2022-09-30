@@ -17,7 +17,7 @@ source( paste(getwd(), "helping_routines", "AA_list_helping_R_routines.R", sep=.
 ####################################################
 
 # information for input data
-path_data   <-"/home/karsten/Beruf/MPI_bremen/projekte/berg_model/REC_R_Version/Version_Githup_modified_ver_1/test_case_2_data_delta/"
+path_data   <-"c:/users/kaiserd/desktop/Version_Githup_modified_ver_1/test_case_2_data_delta/"
 setup_name  <-"test_case_2_data_delta"    # REQUIRED FOR READING IN DATA; REPLACE WITH DIRECT DATA VARIABLE INPUT # Name of setup and name of the data folder
 
 N_c         <- 101      # Number of computational grid points
