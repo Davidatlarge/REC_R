@@ -18,7 +18,7 @@ source(paste(getwd(), "helping_routines", "import_from_setup.R", sep=.Platform$f
 ####################################################
 
 # information for input data
-path_data   <-"c:/users/kaiserd/desktop/Version_Githup_modified_ver_1/test_case_BEIBU/diffusive fluxes/diffusive fluxes by REC/Spring/dry_SYW_NO2/"
+path_data   <- "test_case_BEIBU/diffusive fluxes/diffusive fluxes by REC/Spring/dry_SYW_NO2/"
 #setup_name  <-"dry_SYW_NO2"    # REQUIRED FOR READING IN DATA; REPLACE WITH DIRECT DATA VARIABLE INPUT # Name of setup and name of the data folder
 
 # make one df of input data (now from setup files)
@@ -26,23 +26,22 @@ path_data   <-"c:/users/kaiserd/desktop/Version_Githup_modified_ver_1/test_case_
 # this import can also work as an option in a later function so that the user either supplies data or a path to the setup
 original_data <- import_from_setup(path_data)
 
-N_c         <- 100      # Number of computational grid points
-C_water     <- 0.5     # Nutrient concentration in water column (only important for irrigation)
+N_c         <- 100   # Number of computational grid points
+C_water     <- 0.5   # Nutrient concentration in water column (only important for irrigation)
 
 # parameters for Tikhonov regularization
 lambda      <- 3     # 'smoothing' parameter lambda
-alpha_min   <- 15       # lowest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_min) )
-alpha_max   <- 22      # largest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_max) )
-N_alpha     <- 400     # Number of ratio criterion evaluations in the alpha interval, to find the minimum
+alpha_min   <- 15    # lowest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_min) )
+alpha_max   <- 22    # largest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_max) )
+N_alpha     <- 400   # Number of ratio criterion evaluations in the alpha interval, to find the minimum
 
 # setting the boundary conditions for the nutrient concentration
-bnd_cond_type_z_min <-  1       # type of boundary condition at the top: 1: for concentration / 2: for derivative
+bnd_cond_type_z_min <-  1    # type of boundary condition at the top: 1: for concentration / 2: for derivative
 bnd_cond_C_z_min    <-  0.5  # value of nutrient concentration or derivative at top
-bnd_cond_type_z_max <-  1       # type of boundary condition at the bottom: 1: for concentration / 2: for derivative
-bnd_cond_C_z_max    <-  0.2   # value of nutrient concentration or derivative at bottom
+bnd_cond_type_z_max <-  1    # type of boundary condition at the bottom: 1: for concentration / 2: for derivative
+bnd_cond_C_z_max    <-  0.2  # value of nutrient concentration or derivative at bottom
 
-integrate_rates_afterwards <-  0  # if you want to integrate the obtained rate over a choosen interval
-                                  # 0: no  / 1: yes
+integrate_rates_afterwards <- FALSE  # if you want to integrate the obtained rate over a choosen interval
 
 # =============== end of parameter input =======================================
 
@@ -152,7 +151,7 @@ ggplot() +
 
 # ======== integrate the rate function =======
 # this writes the fluxes directly to a file
-if(integrate_rates_afterwards == 1) {
+if(integrate_rates_afterwards) {
   integrate_rates(R_out, z_c, setup_name)  
 }
 # ============================================
