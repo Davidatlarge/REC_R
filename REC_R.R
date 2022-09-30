@@ -18,7 +18,7 @@ source(paste(getwd(), "helping_routines", "import_from_setup.R", sep=.Platform$f
 ####################################################
 
 # information for input data
-path_data   <- "test_case_BEIBU/diffusive fluxes/diffusive fluxes by REC/Spring/dry_SYW_NO2/"
+path_data   <- "test_case_2_data_delta/"
 #setup_name  <-"dry_SYW_NO2"    # REQUIRED FOR READING IN DATA; REPLACE WITH DIRECT DATA VARIABLE INPUT # Name of setup and name of the data folder
 
 # make one df of input data (now from setup files)
@@ -26,20 +26,20 @@ path_data   <- "test_case_BEIBU/diffusive fluxes/diffusive fluxes by REC/Spring/
 # this import can also work as an option in a later function so that the user either supplies data or a path to the setup
 original_data <- import_from_setup(path_data)
 
-N_c         <- 100   # Number of computational grid points
-C_water     <- 0.5   # Nutrient concentration in water column (only important for irrigation)
+N_c         <- 101   # Number of computational grid points
+C_water     <- 25e3    # Nutrient concentration in water column (only important for irrigation)
 
 # parameters for Tikhonov regularization
-lambda      <- 3     # 'smoothing' parameter lambda
-alpha_min   <- 15    # lowest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_min) )
-alpha_max   <- 22    # largest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_max) )
-N_alpha     <- 400   # Number of ratio criterion evaluations in the alpha interval, to find the minimum
+lambda      <- 1     # 'smoothing' parameter lambda
+alpha_min   <- 8    # lowest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_min) )
+alpha_max   <- 15    # largest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_max) )
+N_alpha     <- 301   # Number of ratio criterion evaluations in the alpha interval, to find the minimum
 
 # setting the boundary conditions for the nutrient concentration
 bnd_cond_type_z_min <-  1    # type of boundary condition at the top: 1: for concentration / 2: for derivative
-bnd_cond_C_z_min    <-  0.5  # value of nutrient concentration or derivative at top
+bnd_cond_C_z_min    <-  25e3  # value of nutrient concentration or derivative at top
 bnd_cond_type_z_max <-  1    # type of boundary condition at the bottom: 1: for concentration / 2: for derivative
-bnd_cond_C_z_max    <-  0.2  # value of nutrient concentration or derivative at bottom
+bnd_cond_C_z_max    <-  5e3  # value of nutrient concentration or derivative at bottom
 
 integrate_rates_afterwards <- FALSE  # if you want to integrate the obtained rate over a choosen interval
 
@@ -113,35 +113,48 @@ rec_out <- list(input_data = original_data,
                 output_data = data.frame(z = z_c, 
                                          rate = con_rate$R_out, 
                                          conc = con_rate$C_out),
-                alpha_opt = con_rate$alpha_opt)
+                alpha_opt = con_rate$alpha_opt,
+                alpha = con_rate$alpha_ticho,
+                Tichonov_criterium = con_rate$quot_crit)
 
-# ======= do a simple plot of the rates ==================================
-plot_rec <- function(rec_out){
+# ======= plotting ==================================
+plot_rec <- function(rec_out,
+                     type = "results" # c("results", "localmin")
+) {
+  if(type == "results") { # concentrations ad rates
+    
+    old <- par()$mfrow
+    par(mfrow=c(1,2))
+    
+    plot(rec_out$output_data$conc, rec_out$output_data$z, 
+         col="green", type='l',
+         ylab = 'z', ylim = rev(range(z_c)),
+         xlab = 'C(z)', xlim = c(min(c(rec_out$input_data$C, rec_out$output_data$conc)), 
+                                 max(c(rec_out$input_data$C, rec_out$output_data$conc))) )
+    points(rec_out$input_data$C, rec_out$input_data$z)
+    
+    plot(rec_out$output_data$rate, rec_out$output_data$z, 
+         col="red", type='l',
+         ylab ='z', ylim = rev(range(z_c)),
+         xlab = 'R(z)')
+    
+    par(mfrow=old)
+    
+  } else if(type == "localmin") { # Tichonov criterion as function of alpha
+    
+    plot(rec_out$alpha, 
+         -rec_out$Tichonov_criterium, # y is neg because the local min in calculate_con_rates_lin_sys_tichonov_mean_rate_2() is found by `which.min(-quot_crit)`
+         log = "x", type = "l",
+         ylab = "T[alpha]", xlab = "alpha")
+    points(rec_out$alpha_opt, -rec_out$Tichonov_criterium[which(rec_out$alpha==rec_out$alpha_opt)], col = "green")
   
-  old <- par()$mfrow
-  par(mfrow=c(1,2))
-  
-  plot(rec_out$output_data$conc, rec_out$output_data$z, 
-       col="green", type='l',
-       ylab = 'z', ylim = rev(range(z_c)),
-       xlab = 'C(z)', xlim = c(min(c(rec_out$input_data$C, rec_out$output_data$conc)), 
-                               max(c(rec_out$input_data$C, rec_out$output_data$conc))) )
-  points(rec_out$input_data$C, rec_out$input_data$z)
-  
-  plot(rec_out$output_data$rate, rec_out$output_data$z, 
-       col="red", type='l',
-       ylab ='z', ylim = rev(range(z_c)),
-       xlab = 'R(z)')
-  
-  par(mfrow=old)
+  } else {
+    stop('type needs to be one of "results" or "localmin"')
+  }
 }
 
-plot_rec(rec_out)
-# ========================================================================
-
-
-
-
+plot_rec(rec_out, type = "results")
+plot_rec(rec_out, type = "localmin")
 
 # ========= write to output file ======================
 # of setup_name, R_out, C_out, z_c
