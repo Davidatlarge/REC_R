@@ -1,7 +1,7 @@
-# this function calcualtes the diffusive and advective fluxes
+# this function calculates the diffusive and advective fluxes
 # across the interfaces of the considered depth interval
 boundary_fluxes <- function(rec_out, explain = TRUE) {
-  source("helping_routines/abl_1.R")
+  source("helping_routines/abl_1.R", local = T)
   
   C_out <- rec_out$output_data$conc
   z_c <- rec_out$output_data$z

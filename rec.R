@@ -1,18 +1,18 @@
 
 rec <- function(
   original_data,
-  N_c = 101,               # Number of computational grid points
-  C_water = 25e3,          # Nutrient concentration in water column (only important for irrigation)
+  N_c,                 # Number of computational grid points
+  C_water,             # Nutrient concentration in water column (only important for irrigation)
   # parameters for Tikhonov regularization
-  lambda = 1,              # 'smoothing' parameter lambda
-  alpha_min = 8,           # lowest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_min) )
-  alpha_max = 15,          # largest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_max) )
-  N_alpha = 301,           # Number of ratio criterion evaluations in the alpha interval, to find the minimum
+  lambda,              # 'smoothing' parameter lambda
+  alpha_min,           # lowest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_min) )
+  alpha_max,           # largest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_max) )
+  N_alpha,             # Number of ratio criterion evaluations in the alpha interval, to find the minimum
   # setting the boundary conditions for the nutrient concentration
-  bnd_cond_type_z_min = 1, # type of boundary condition at the top: 1: for concentration / 2: for derivative
-  bnd_cond_C_z_min = 25e3, # value of nutrient concentration or derivative at top
-  bnd_cond_type_z_max = 1, # type of boundary condition at the bottom: 1: for concentration / 2: for derivative
-  bnd_cond_C_z_max = 5e3   # value of nutrient concentration or derivative at bottom
+  bnd_cond_type_z_min, # type of boundary condition at the top: 1: for concentration / 2: for derivative
+  bnd_cond_C_z_min,    # value of nutrient concentration or derivative at top
+  bnd_cond_type_z_max, # type of boundary condition at the bottom: 1: for concentration / 2: for derivative
+  bnd_cond_C_z_max     # value of nutrient concentration or derivative at bottom
   
 ) {
   # ===========  load packages and helping functions -------
@@ -65,6 +65,13 @@ rec <- function(
                                     lambda=lambda, alpha_min=alpha_min, alpha_max=alpha_max, N_alpha=N_alpha, 
                                     bnd_cond_type_z_min=bnd_cond_type_z_min, bnd_cond_C_z_min=bnd_cond_C_z_min, 
                                     bnd_cond_type_z_max=bnd_cond_type_z_max, bnd_cond_C_z_max=bnd_cond_C_z_max), 
+                  interpol_data = data.frame(C_c,
+                                             phi,
+                                             omega,
+                                             beta,
+                                             D,
+                                             D_b,
+                                             D_total),
                   output_data = data.frame(z = z_c, 
                                            rate = con_rate$R_out, 
                                            conc = con_rate$C_out),
@@ -74,19 +81,3 @@ rec <- function(
   
   return(rec_out)
 }
-
-# remove helper functions from environment
-#rm( list = sub(".*/(.*).R$", "\\1", list.files(paste0(getwd(), "/helping_routines"), pattern = ".R$", full.names = TRUE)) )
-
-## example
-source("import_from_setup.R")
-df <- import_from_setup("test_case_2_data_delta/")
-test <- rec(original_data = df)
-
-source("evaluation_functions/plot_rec.R")
-index=which.min(-test$Tichonov_criterium)
-plot_rec(test, type = "localmin")
-points(test$alpha[index], -test$Tichonov_criterium[index], col = "red")
-# compare index for optimum alpha and index for local (actually abs) min
-which(test$alpha==test$alpha_opt)
-index
