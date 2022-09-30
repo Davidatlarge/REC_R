@@ -1,7 +1,8 @@
 # ---------------------------------------------
 # now operates on a df in the environment instead of re/opening a file
 # accepts a column name on that df in the environment instead of a file path/name
-operate_property <- function(parameter, #c("C", "phi", "omega", "beta", "D", "Db") 
+operate_property <- function(original_data,
+                             parameter, # c("C", "phi", "omega", "beta", "D", "Db") 
                                 z_c) {
   
   error <- 0
@@ -20,13 +21,13 @@ operate_property <- function(parameter, #c("C", "phi", "omega", "beta", "D", "Db
     f_c    <- pracma::interp1(z_data,f_data,  xi = z_c, method = "linear")
    
     error <- 0.0
-    print('Data interval is correct.')
-  } 
-  
-  else {
+    print(paste('Data interval for', parameter,'is correct.'))
+    
+  } else {
     
     print('The z-coordinate at the end points of the interval do not match the z-coordinates of the concentration data')
     error <- 1.0
+    
   }
   
   props <- list("z_c" = z_c, "f_c" = f_c, "error"= error)
