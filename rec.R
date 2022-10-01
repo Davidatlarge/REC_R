@@ -26,12 +26,12 @@ rec <- function(
   z_data  <- original_data$z
   z_c     <- matlab::linspace(z_data[1], z_data[length(z_data)], N_c)
   
-  C_c     <- operate_property(original_data, "C", z_c)$f_c
-  phi     <- operate_property(original_data, "phi", z_c)$f_c
-  omega   <- operate_property(original_data, "omega", z_c)$f_c
-  beta    <- operate_property(original_data, "beta", z_c)$f_c
-  D       <- operate_property(original_data, "D", z_c)$f_c
-  D_b     <- operate_property(original_data, "Db", z_c)$f_c
+  C_c     <- operate_property(original_data, "C", z_c)
+  phi     <- operate_property(original_data, "phi", z_c)
+  omega   <- operate_property(original_data, "omega", z_c)
+  beta    <- operate_property(original_data, "beta", z_c)
+  D       <- operate_property(original_data, "D", z_c)
+  D_b     <- operate_property(original_data, "Db", z_c)
   D_total <- D + D_b         # total diffusivity
   
   # store the boundary conditions into list
