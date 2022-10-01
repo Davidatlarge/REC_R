@@ -3,4 +3,8 @@
 .RData
 .Ruserdata
 *.jpeg
+*.jpg
+*.JPG
 *.xlsx
+README_files/
+README.html
