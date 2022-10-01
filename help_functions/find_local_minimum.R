@@ -2,7 +2,7 @@
 find_local_minimum <- function(values, 
                                which.loc.min = "first" # c("first", "lowest")
                                ) {
-  
+  # ---- find local minima ---- 
   locmin <- NULL
   for(i in 1:length(values)) {
     if(i == 1 | i == length(values)) {
@@ -12,6 +12,7 @@ find_local_minimum <- function(values,
     }
   }
   
+  # ---- define the index for best alpha ---- 
   if(sum(locmin)>0) { # if there is at least one local minimum
     if(which.loc.min == "first") {
       index <- which(locmin)[1] # use the first local minimum
@@ -20,11 +21,11 @@ find_local_minimum <- function(values,
     } else {
       print("which.loc.min must be one of 'first' or 'lowest'")
     }
-    #
   } else { # if there is no local minimum
-    print("No local minimum of the Tikhonov criterion found. Using absolute minimum. But you can change alpha limits to look for a local minimum.")
+    cat("No local minimum of the Tikhonov criterion found. Using absolute minimum. \nBut you can change alpha limits to look for a local minimum.\n")
     index <- which.min(values)
   }
   
+  # ---- return ---- 
   return(index)
 }

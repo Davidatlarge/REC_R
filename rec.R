@@ -15,15 +15,14 @@ rec <- function(
   bnd_cond_C_z_max     # value of nutrient concentration or derivative at bottom
   
 ) {
-  # ===========  load packages and helping functions -------
+  # ---- load packages and helping functions ---- 
   suppressMessages(library(matlab)) 
   suppressWarnings(suppressMessages(library(pracma)))
   suppressMessages(library(scales)) 
   # source helper functions in a for loop because the argument local = TRUE is not effective in apply
-  #sapply(list.files(paste0(getwd(), "/help_functions"), pattern = ".R$", full.names = TRUE), source, local = TRUE)
   for(i in list.files(paste0(getwd(), "/help_functions"), pattern = ".R$", full.names = TRUE)) { source(i, local = TRUE) }
   
-  # =========== some pre - operations ======================================
+  # ---- some pre - operations ---- 
   z_data  <- original_data$z
   z_c     <- matlab::linspace(z_data[1], z_data[length(z_data)], N_c)
   
@@ -36,21 +35,21 @@ rec <- function(
   D_total <- D + D_b         # total diffusivity
   
   # store the boundary conditions into list
-  bnd_cond <- list( "type_z_min" = bnd_cond_type_z_min,
-                    "C_z_min"    = bnd_cond_C_z_min,
-                    "type_z_max" = bnd_cond_type_z_max,
-                    "C_z_max"    = bnd_cond_C_z_max)
+  bnd_cond <- list(type_z_min = bnd_cond_type_z_min,
+                   C_z_min    = bnd_cond_C_z_min,
+                   type_z_max = bnd_cond_type_z_max,
+                   C_z_max    = bnd_cond_C_z_max)
   
-  # for Tickhonov regularization
+  # for Tikhonov regularization
   l_0 <- 1
   l_1 <- lambda
   l_2 <- lambda
-  alpha_ticho <- matlab::logspace(alpha_min, alpha_max, N_alpha)
+  alpha_tikho <- matlab::logspace(alpha_min, alpha_max, N_alpha)
   
-  # =========== Determine Concentration and Rates =============================
-  con_rate <- calculate_con_rates_lin_sys_tichonov_mean_rate_2(C_water,
+  # ---- Determine Concentration and Rates ---- 
+  con_rate <- calculate_con_rates_lin_sys_Tikhonov_mean_rate_2(C_water,
                                                                bnd_cond, 
-                                                               alpha_ticho,
+                                                               alpha_tikho,
                                                                l_0,
                                                                l_1,
                                                                l_2,
@@ -61,7 +60,7 @@ rec <- function(
                                                                beta,
                                                                phi)
   
-  # ===========  combine results in an object ==================================
+  # ---- combine results in an object ---- 
   rec_out <- list(input_data = original_data,
                   input_pars = list(N_c=N_c, C_water=C_water, 
                                     lambda=lambda, alpha_min=alpha_min, alpha_max=alpha_max, N_alpha=N_alpha, 
@@ -78,8 +77,8 @@ rec <- function(
                                            conc = con_rate$C_out, 
                                            rate = con_rate$R_out),
                   alpha_opt = con_rate$alpha_opt,
-                  alpha = con_rate$alpha_ticho,
-                  Tichonov_criterium = con_rate$quot_crit)
+                  alpha = con_rate$alpha_tikho,
+                  Tikhonov_criterium = con_rate$quot_crit)
   
   return(rec_out)
 }

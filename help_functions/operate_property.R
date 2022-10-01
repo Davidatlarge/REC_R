@@ -1,38 +1,34 @@
-# ---------------------------------------------
 # now operates on a df in the environment instead of re/opening a file
 # accepts a column name on that df in the environment instead of a file path/name
 operate_property <- function(original_data,
                              parameter, # c("C", "phi", "omega", "beta", "D", "Db") 
-                                z_c) {
+                             z_c) {
   
-  error <- 0
+  error <- FALSE
   
-  # read the data
+  # ---- identify the data ---- 
   z_data <- original_data$z
   f_data <- original_data[,parameter]
   
-  if(z_data[1] <= z_c[1] & z_data[length(z_data)] >= z_c[length(z_c)]) {
-    
+  if(z_data[1] <= z_c[1] & 
+     z_data[length(z_data)] >= z_c[length(z_c)]) {
     z_data <- make_column_vector(z_data)
     f_data <- make_column_vector(f_data)
     z_c    <- make_column_vector(z_c)
     
     # do the linear interpolation to the computational grid
-    f_c    <- pracma::interp1(z_data,f_data,  xi = z_c, method = "linear")
+    f_c <- pracma::interp1(z_data,f_data,  xi = z_c, method = "linear")
    
-    error <- 0.0
-    print(paste('Data interval for', parameter,'is correct.'))
-    
+    error <- FALSE
+    cat(paste("Data interval for", parameter,"is correct.\n"))
   } else {
-    
-    print('The z-coordinate at the end points of the interval do not match the z-coordinates of the concentration data')
-    error <- 1.0
-    
+    error <- TRUE
+    cat("The z-coordinate at the end points of the interval do not match the z-coordinates of the concentration data\n")
   }
   
-  props <- list("z_c" = z_c, "f_c" = f_c, "error"= error)
-  
+  # ---- return ---- 
+  props <- list(z_c   = z_c, 
+                f_c   = f_c, 
+                error = error)
   return(props)
 }
-
-# expected output: [z_c,f_c,error]

@@ -18,26 +18,23 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # =
   N_grid <- length(z)
   N <- N_grid - 2  # Dimension of Matrix: N = N_grid - 2
   
-  # --------- reading the bnd_con structure ----- 
+  # ---- reading the bnd_con structure ---- 
   C_z_min    <- bnd_cond$C_z_min
   C_z_max    <- bnd_cond$C_z_max
   type_z_min <- bnd_cond$type_z_min
   type_z_max <- bnd_cond$type_z_max
-  # ---------------------------------------------
   
-  # ----- make row vectors -------------- # requires defining make_row_vector()
+  # ---- make row vectors ---- 
   z     <- make_row_vector(z) 
   D     <- make_row_vector(D)
   omega <- make_row_vector(omega)
   beta  <- make_row_vector(beta)
   por   <- make_row_vector(por)
-  # -------------------------------------
   
-  # ------- determine grid spacings -------
+  # ---- determine grid spacing ---- 
   delta_z <- z[2] - z[1]
-  # ---------------------------------------
   
-  # ------ construct coefficient vectors r(z) and s(z) -----
+  # ---- construct coefficient vectors r(z) and s(z) ---- 
   # element-wise multiplication is via "*" in r but ".*" in matlab
   # this for is correct; omega2 D2 and beta2 need to be a vector 
   # but with %*% it would become a scalar
@@ -45,14 +42,13 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # =
   D2     <- D * por
   beta2  <- beta * por
   
-  D2_abl     <- abl_1(D2, z) # requires defining abl_1()
-  omega2_abl <- abl_1(omega2, z) # requires defining abl_1()
+  D2_abl     <- abl_1(D2, z)     
+  omega2_abl <- abl_1(omega2, z) 
   
   r <- omega2_abl + beta2 # vector addition is element-wise in both matlab and R
-  s <- omega2 - D2_abl # so is subtraction
-  # -----------------------------------------------------
+  s <- omega2 - D2_abl    # so is subtraction
   
-  # ----- construct blending factor sigma ---------------
+  # ---- construct blending factor sigma ---- 
   for(i in 1:N_grid ) {
     if(!exists("sig")) {sig <- numeric(0)}
     if(s[i] == 0) {
@@ -62,51 +58,46 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # =
       sig[i] <- pracma::coth(eta) - 1/eta
     }
   }
-  # -------------------------------------------------------
   
-  # -------- construct the matrix coefficients ------------
+  # ---- construct the matrix coefficients ---- 
   aa <- -(1+sig) * s / (2*delta_z) - D2 / (delta_z)^2
   bb <- r + s * sig / delta_z + 2*D2 / (delta_z)^2
   cc <- (1-sig) * s / (2*delta_z) - D2 / (delta_z)^2
-  # -------------------------------------------------------
   
-  # ----- Construction of the forward Diff_op -------------------------
+  # ---- Construction of the forward Diff_op ---- 
   Diff_op <- matlab::zeros(N, N)
   for(i in 2:(N-1)) {  
     Diff_op[i, i-1] <- aa[i+1]
-    Diff_op[i,i]   <- bb[i+1]
-    Diff_op[i,i+1] <- cc[i+1]
+    Diff_op[i,i]    <- bb[i+1]
+    Diff_op[i,i+1]  <- cc[i+1]
   }
   
   # first line
   if(type_z_min == 1) { # Dirichlet conditions
-    print('Using Dirichlet boundary conditions for top boundary')
+    cat("Using Dirichlet boundary conditions for top boundary\n")
     Diff_op[1,1] <- bb[2]
     Diff_op[1,2] <- cc[2]
   } else if(type_z_min == 2) { # von Neumann conditions
-    print('Using von Neumann boundary conditions for top boundary')
+    cat("Using von Neumann boundary conditions for top boundary\n")
     Diff_op[1,1] <- bb[2] + 4/3*aa[2]
     Diff_op[1,2] <- cc[2] - 1/3*aa[2]
   }
   
   # N th line
   if(type_z_max == 1) { # Dirichlet conditions
-    print('Using Dirichlet boundary conditions for bottom boundary')
+    cat("Using Dirichlet boundary conditions for bottom boundary\n")
     Diff_op[N,N-1] <- aa[N_grid-1]
     Diff_op[N,N] <- bb[N_grid-1]
   } else if(type_z_max == 2) { # von Neumann conditions
-    print('Using von Neuman boundary conditions for bottom boundary')
+    cat("Using von Neuman boundary conditions for bottom boundary\n")
     Diff_op[N,N-1] = aa[N_grid-1] - 1/3*cc[N_grid-1]
     Diff_op[N,N] = bb[N_grid-1] + 4/3*cc[N_grid-1]
   }
-  # -------------------------------------------------------
   
-  # ------ construction of A -------------------------
-  #Diff_op
+  # ---- construction of A ---- 
   A <- pracma::inv(Diff_op)
-  # -------------------------------------------------
   
-  # ------- Constructing e -----------------
+  # ---- Constructing e ---- 
   d <- -C_water * t(beta2[2:(N_grid-1)])  # results in a [1:N] matrix
   d <- make_column_vector(d)              # turn into [N,1] 1-column matrix for multiplication with A
 
@@ -127,17 +118,13 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # =
   }
   
   e <- A %*% d
-  # ----------------------------------------
   
-  # return
-  diff_op_matrix <- list(
-    "A" = A,
-    "e" = e,
-    "Diff_op" = Diff_op,
-    "d" = d
-  )
+  # ---- return ---- 
+  diff_op_matrix <- list(A = A,
+                         e = e,
+                         Diff_op = Diff_op,
+                         d = d)
   
   return(diff_op_matrix)
-  # -----------------------------------------
   
 }

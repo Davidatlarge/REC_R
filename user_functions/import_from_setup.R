@@ -18,7 +18,7 @@ import_from_setup <- function(setup_path # path to the setup
     }
   }
   # sort the columns (not strictly necessary)
-  data <- data[,c("z", "C", "phi", "omega", "beta","D","Db")]
+  data <- data[,c("z", "C", "phi", "omega", "beta", "D", "Db")]
   
   return(data)
 }
