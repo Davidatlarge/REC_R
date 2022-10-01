@@ -28,8 +28,7 @@ integrate_rates <- function(rec_out,
   weights <- c(a, b, c)
   
   if(explain) {
-    cat("Output file for depth integrated rates.  \n")
-    cat("The depth integration is done by Simpson´s Rule on the equidistant z-grid.  \n")
+    cat("The depth integration is done by Simpson's Rule on the equidistant z-grid.  \n")
     cat("The unit of the integrated rate is: [nmol/(cm^2 s)] \n")
     cat("Or in related units, if not the standard unit system is used. \n")
     

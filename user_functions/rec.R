@@ -13,14 +13,18 @@ rec <- function(
   bnd_cond_C_z_min,    # value of nutrient concentration or derivative at top
   bnd_cond_type_z_max, # type of boundary condition at the bottom: 1: for concentration / 2: for derivative
   bnd_cond_C_z_max     # value of nutrient concentration or derivative at bottom
-  
 ) {
   # ---- load packages and helping functions ---- 
   suppressMessages(library(matlab)) 
   suppressWarnings(suppressMessages(library(pracma)))
   suppressMessages(library(scales)) 
-  # source helper functions in a for loop because the argument local = TRUE is not effective in apply
-  for(i in list.files(paste0(getwd(), "/help_functions"), pattern = ".R$", full.names = TRUE)) { source(i, local = TRUE) }
+  for(i in list.files(paste0(getwd(), "/help_functions"), pattern = ".R$", full.names = TRUE)) { source(i, local = TRUE) } # source helper functions in a for loop because the argument local = TRUE is not effective in apply
+  
+  # ---- deal with missing data columns ---- 
+  if(!(all(c("z", "C", "phi", "D") %in% colnames(original_data)))) stop("colums 'z', 'C', 'phi' and/or 'D' are missing from input data\n  but cannot be substituted with zeros")
+  if(!("omega" %in% colnames(original_data))) {original_data$omega <- 0; cat("column 'omega' not found, using all 0 values\n")}  
+  if(!("beta" %in% colnames(original_data))) {original_data$beta <- 0; cat("column 'beta' not found, using all 0 values\n")}
+  if(!("Db" %in% colnames(original_data))) {original_data$Db <- 0; cat("column 'Db' not found, using all 0 values\n")}
   
   # ---- some pre - operations ---- 
   z_data  <- original_data$z
