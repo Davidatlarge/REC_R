@@ -1,6 +1,6 @@
 ## example
 # load data
-source("import_from_setup.R")
+source("user_functions/import_from_setup.R")
 df <- import_from_setup("test_case_2_data_delta/")
 head(df)
 
@@ -20,19 +20,19 @@ test <- rec(original_data = df,
             bnd_cond_type_z_max = 1, # type of boundary condition at the bottom: 1: for concentration / 2: for derivative
             bnd_cond_C_z_max = 5e3   # value of nutrient concentration or derivative at bottom
             )
-rm(list = sub(".*/(.*).R$", "\\1", list.files(paste0(getwd(), "/helping_routines"), pattern = ".R$", full.names = TRUE))) # remove helper functions from environment
 
 # plot results
-source("evaluation_functions/plot_rec.R")
+source("user_functions/plot_rec.R")
 plot_rec(test)
 plot_rec(test, type = "localmin")
+plot_rec(test, type = "input")
 
 # calculate boundary fluxes
-source("evaluation_functions/boundary_fluxes.R")
+source("user_functions/boundary_fluxes.R")
 boundary_fluxes(test)
 
 # calculate integrated rates
-source("evaluation_functions/integrate_rates.R")
+source("user_functions/integrate_rates.R")
 plot(test$output_data$z~test$output_data$rate, 
      ylim = rev(range(test$output_data$z)), ylab = "z", xlab = "rate")
 abline(h = c(0,30))

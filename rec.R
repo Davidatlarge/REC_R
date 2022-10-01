@@ -16,10 +16,12 @@ rec <- function(
   
 ) {
   # ===========  load packages and helping functions -------
-  library(matlab)
-  library(pracma)
-  library(scales)
-  sapply(list.files(paste0(getwd(), "/helping_routines"), pattern = ".R$", full.names = TRUE), source)
+  suppressMessages(library(matlab)) 
+  suppressWarnings(suppressMessages(library(pracma)))
+  suppressMessages(library(scales)) 
+  # source helper functions in a for loop because the argument local = TRUE is not effective in apply
+  #sapply(list.files(paste0(getwd(), "/help_functions"), pattern = ".R$", full.names = TRUE), source, local = TRUE)
+  for(i in list.files(paste0(getwd(), "/help_functions"), pattern = ".R$", full.names = TRUE)) { source(i, local = TRUE) }
   
   # =========== some pre - operations ======================================
   z_data  <- original_data$z
@@ -73,8 +75,8 @@ rec <- function(
                                              D_b,
                                              D_total),
                   output_data = data.frame(z = z_c, 
-                                           rate = con_rate$R_out, 
-                                           conc = con_rate$C_out),
+                                           conc = con_rate$C_out, 
+                                           rate = con_rate$R_out),
                   alpha_opt = con_rate$alpha_opt,
                   alpha = con_rate$alpha_ticho,
                   Tichonov_criterium = con_rate$quot_crit)
