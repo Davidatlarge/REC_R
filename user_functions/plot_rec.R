@@ -35,7 +35,7 @@ plot_rec <- function(rec_out,
          -rec_out$Tikhonov_criterium, # y is neg because the local min in calculate_con_rates_lin_sys_Tikhonov_mean_rate_2() is found by `which.min(-quot_crit)`
          log = "x", type = "l",
          ylab = "T[alpha]", xlab = "alpha")
-    points(rec_out$alpha_opt, -rec_out$Tikhonov_criterium[which.min(-rec_out$Tikhonov_criterium)], col = "green")
+    points(rec_out$alpha_opt, -rec_out$Tikhonov_criterium[which(rec_out$alpha==rec_out$alpha_opt)], col = "green")
     par(mfrow=old)
     
   } else {
