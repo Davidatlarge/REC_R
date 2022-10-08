@@ -1,6 +1,6 @@
 # find local minima to index the location of optimal alpha values
 find_local_minimum <- function(values, 
-                               which.loc.min = "first" # c("first", "lowest")
+                               which.loc.min = "lowest" # c("first", "lowest")
                                ) {
   # ---- find local minima ---- 
   locmin <- NULL
