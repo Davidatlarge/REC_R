@@ -15,9 +15,9 @@ rec <- function(
   bnd_cond_C_z_max     # value of nutrient concentration or derivative at bottom
 ) {
   # ---- load packages and helping functions ---- 
-  suppressMessages(library(matlab)) 
-  suppressWarnings(suppressMessages(library(pracma)))
-  suppressMessages(library(scales)) 
+  suppressMessages(require(matlab)) 
+  suppressWarnings(suppressMessages(require(pracma)))
+  suppressMessages(require(scales)) 
   for(i in list.files(paste0(getwd(), "/help_functions"), pattern = ".R$", full.names = TRUE)) { source(i, local = TRUE) } # source helper functions in a for loop because the argument local = TRUE is not effective in apply
   
   # ---- deal with missing data columns ---- 
