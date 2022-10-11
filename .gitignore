@@ -3,8 +3,11 @@
 .RData
 .Ruserdata
 REC_v3.1_kit
+rec_shiny
+more_test_data
+old_dev_versions
 *.jpeg
 *.jpg
 *.JPG
 *.xlsx
-README.html
+*.html
