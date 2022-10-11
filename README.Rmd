@@ -14,7 +14,7 @@ REC was originally developed by Karsten Lettmann ([Lettmann et al. 2012](https:/
 
 ## Preparing data
 The matlab version requires data input from a 'setup', a folder containing individual data files named \*_C.txt, \*_phi.txt, \*_omega.txt , \*_beta.txt, \*_D.txt, and \*_Db.txt, all files contain z (depth) values. This R version take as input a data frame with columns `c(z, C, phi, omega, beta, D, Db)`. Setups can still be used and data imported from them using the function `import_from_setup()`. `import_from_setup()` takes as argument the path to a setup folder, finds the required files in the setup folder and merges them based on z (depth) values, but ignores all other files so that results (or other) files could be saved in the setup without interfering with the import. Columns z, C, phi and D have to be supplied and cannot be all zeros; columns omega, beta, and Db may not be supplied and will the be substituted with all zeros.
-*C* denotes concentration of the water constituent. $\phi$ (phi) denotes the sediment porosity, $\omega$ (omega) the sedimentation rate combined with pore water advection, *D* the molecular diffusion coefficient (corrected for sediment properties), *D~B~* (Db) denotes the bioturbation coefficient, $\beta$ (beta) the coefficient of irrigation.
+*C* denotes concentration of the water constituent. &phi; (phi) denotes the sediment porosity, &omega; (omega) the sedimentation rate combined with pore water advection, *D* the molecular diffusion coefficient (corrected for sediment properties), *D~B~* (Db) denotes the bioturbation coefficient, &beta; (beta) the coefficient of irrigation.
 
 Here we import data from the original example setup.
 
@@ -55,7 +55,13 @@ By default `plot_rec()` plots a two panel depth profile of input and interpolate
 
 ```{r}
 plot_rec(test)
+```
+
+```{r}
 plot_rec(test, type = "localmin")
+```
+
+```{r}
 plot_rec(test, type = "input")
 ```
 

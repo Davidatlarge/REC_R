@@ -25,11 +25,11 @@ files could be saved in the setup without interfering with the import.
 Columns z, C, phi and D have to be supplied and cannot be all zeros;
 columns omega, beta, and Db may not be supplied and will the be
 substituted with all zeros. *C* denotes concentration of the water
-constituent. \(\phi\) (phi) denotes the sediment porosity, \(\omega\)
-(omega) the sedimentation rate combined with pore water advection, *D*
-the molecular diffusion coefficient (corrected for sediment properties),
-*D<sub>B</sub>* (Db) denotes the bioturbation coefficient, \(\beta\)
-(beta) the coefficient of irrigation.
+constituent. φ (phi) denotes the sediment porosity, ω (omega) the
+sedimentation rate combined with pore water advection, *D* the molecular
+diffusion coefficient (corrected for sediment properties),
+*D<sub>B</sub>* (Db) denotes the bioturbation coefficient, β (beta) the
+coefficient of irrigation.
 
 Here we import data from the original example setup.
 
@@ -136,13 +136,13 @@ plot_rec(test)
 plot_rec(test, type = "localmin")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
 plot_rec(test, type = "input")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-4-3.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ## Calculate boundary fluxes
 
@@ -177,7 +177,7 @@ rates will be integrated over the entire z range. By default, the
 calculation will be explaind as text printed to the console but this can
 be suppresed by setting the argument `explain = FALSE`.
 
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
 integrate_rates(test)
