@@ -23,7 +23,7 @@ finds the required files in the setup folder and merges them based on z
 (depth) values, but ignores all other files so that results (or other)
 files could be saved in the setup without interfering with the import.
 Columns z, C, phi and D have to be supplied and cannot be all zeros;
-columns omega, beta, and Db may not be supplied and will the be
+columns omega, beta, and Db may not be supplied and will then be
 substituted with all zeros. *C* denotes concentration of the water
 constituent. φ (phi) denotes the sediment porosity, ω (omega) the
 sedimentation rate combined with pore water advection, *D* the molecular
@@ -54,7 +54,7 @@ concentration profile and rates at a supplied depth resolution. The
 function then interpolates input data to the required resolution, passes
 them together with input arguments to a calculation function
 `calculate_con_rates_lin_sys_Tikhonov_mean_rate_2()`, and compiles the
-results for output as a names list. Internally,
+results for output as a named list. Internally,
 `calculate_con_rates_lin_sys_Tikhonov_mean_rate_2()` calls a few other
 functions.
 
@@ -123,8 +123,8 @@ criterion as a function of alpha. The latter is useful to check if a
 local minimum in the Tikhonov criterion was actually found and a
 corresponding optimal alpha value used. This optimal alpha is shown on
 the figure as a green dot. Printed output from `rec()` will also warn if
-no local minimum was found and the absolute minimum is used as the
-location of the optimal alpha.
+no local minimum was found and the (first occurrence of the) absolute
+minimum is used as the location of the optimal alpha.
 
 ``` r
 plot_rec(test)
@@ -146,7 +146,7 @@ plot_rec(test, type = "input")
 
 ## Calculate boundary fluxes
 
-Fluxes of the constituent of “C” across the upper and lower boundary of
+Fluxes of the constituent of *C* across the upper and lower boundary of
 the depth profile can be calculated with `boundary_fluxes()`. This is
 useful e.g. in studies of benthic-pelagic coupling. The function accepts
 the output of `rec()`. By default, an explanation of the calculation is
@@ -170,12 +170,12 @@ boundary_fluxes(test)
 
 ## Calculate integrated rates
 
-The rates of production of a constituent for “C” can be integrated using
+The rates of production of a constituent for *C* can be integrated using
 `integrate_rates()`. The integration interval can be defined using the
 `z_min` and `z_max` arguments but if no values for these are supplied,
 rates will be integrated over the entire z range. By default, the
-calculation will be explaind as text printed to the console but this can
-be suppresed by setting the argument `explain = FALSE`.
+calculation will be explained as text printed to the console but this
+can be suppressed by setting the argument `explain = FALSE`.
 
 ![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
