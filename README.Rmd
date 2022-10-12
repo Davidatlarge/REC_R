@@ -28,6 +28,7 @@ The example data is passed to the main function `rec()` as data frame. `rec()` t
 
 ```{r}
 test <- rec(original_data = df,
+            recargs = NULL,          # data frame containing values for the input arguments; takes precedent over individual arguments
             N_c = 101,               # Number of computational grid points
             C_water = 25e3,          # Nutrient concentration in water column (only important for irrigation)
             # parameters for Tikhonov regularization
@@ -46,7 +47,17 @@ test <- rec(original_data = df,
 ```{r}
 summary(test)
 ```
+
 The list contains the *input data* as a data frame; the *input parameters* entered as arguments of `rec()` as a list; the interpolated data (i.e., the input data at a depth resolution passed to  `rec()` via `N_c`, minus the z column) as a data frame; the output data of z in the required resolution and the corresponding *interpolated concentrations* and *calculated rates* as a data frame; the *optimum alpha* value; a vector of all tested alpha values and a vector of corresponding Tikhonov criterion values.
+
+The arguments to `rec()` can also be passed by supplying to the argument `recargs` a data frame containing the arguments as column names. If both are supplied the data frame input will take precedent over the individual input (by internally overwriting the arguments). This would, for example, allow saving the input values for the arguments in a separate file in a setup folder. 
+
+```{r echo=FALSE, warning=FALSE}
+file <- list.files("test_case_2_data_delta/", pattern = "*_recargs.txt", full.names = TRUE)
+recargs <- read.csv(file)
+recargs
+```
+
 
 ## Visualize results
 The function `plot_rec()` makes it easy to plot results for a quick overview. It works on the output from `rec()`, so all plots (and more) can also be produced directly from the output.

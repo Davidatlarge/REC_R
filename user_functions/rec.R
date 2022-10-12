@@ -1,6 +1,7 @@
 
 rec <- function(
   original_data,
+  recargs = NULL,      # data frame containing values for the input arguments; takes precedent over individual arguments
   N_c,                 # Number of computational grid points
   C_water,             # Nutrient concentration in water column (only important for irrigation)
   # parameters for Tikhonov regularization
@@ -19,6 +20,20 @@ rec <- function(
   suppressWarnings(suppressMessages(require(pracma)))
   suppressMessages(require(scales)) 
   for(i in list.files(paste0(getwd(), "/help_functions"), pattern = ".R$", full.names = TRUE)) { source(i, local = TRUE) } # source helper functions in a for loop because the argument local = TRUE is not effective in apply
+  
+  # ---- import REC arguments if supplied as recargs ----
+  if(!is.null(recargs)) {
+    N_c                 <- recargs$N_c
+    C_water             <- recargs$C_water
+    lambda              <- recargs$lambda
+    alpha_min           <- recargs$alpha_min
+    alpha_max           <- recargs$alpha_max
+    N_alpha             <- recargs$N_alpha
+    bnd_cond_type_z_min <- recargs$bnd_cond_type_z_min
+    bnd_cond_C_z_min    <- recargs$bnd_cond_C_z_min
+    bnd_cond_type_z_max <- recargs$bnd_cond_type_z_max
+    bnd_cond_C_z_max    <- recargs$bnd_cond_C_z_max
+  }
   
   # ---- deal with missing data columns ---- 
   if(!(all(c("z", "C", "phi", "D") %in% colnames(original_data)))) stop("colums 'z', 'C', 'phi' and/or 'D' are missing from input data\n  but cannot be substituted with zeros")

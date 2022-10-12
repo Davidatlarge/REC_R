@@ -60,6 +60,7 @@ functions.
 
 ``` r
 test <- rec(original_data = df,
+            recargs = NULL,          # data frame containing values for the input arguments; takes precedent over individual arguments
             N_c = 101,               # Number of computational grid points
             C_water = 25e3,          # Nutrient concentration in water column (only important for irrigation)
             # parameters for Tikhonov regularization
@@ -110,6 +111,18 @@ and *calculated rates* as a data frame; the *optimum alpha* value; a
 vector of all tested alpha values and a vector of corresponding Tikhonov
 criterion values.
 
+The arguments to `rec()` can also be passed by supplying to the argument
+`recargs` a data frame containing the arguments as column names. If both
+are supplied the data frame input will take precedent over the
+individual input (by internally overwriting the arguments). This would,
+for example, allow saving the input values for the arguments in a
+separate file in a setup folder.
+
+    ##   N_c C_water lambda alpha_min alpha_max N_alpha bnd_cond_type_z_min
+    ## 1 101   25000      1         8        15     301                   1
+    ##   bnd_cond_C_z_min bnd_cond_type_z_max bnd_cond_C_z_max
+    ## 1            25000                   1             5000
+
 ## Visualize results
 
 The function `plot_rec()` makes it easy to plot results for a quick
@@ -130,19 +143,19 @@ minimum is used as the location of the optimal alpha.
 plot_rec(test)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
 plot_rec(test, type = "localmin")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
 plot_rec(test, type = "input")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ## Calculate boundary fluxes
 
@@ -177,7 +190,7 @@ rates will be integrated over the entire z range. By default, the
 calculation will be explained as text printed to the console but this
 can be suppressed by setting the argument `explain = FALSE`.
 
-![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ``` r
 integrate_rates(test)

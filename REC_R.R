@@ -1,18 +1,25 @@
 # load data
 rm(list = ls())
 source("user_functions/import_from_setup.R")
-df <- import_from_setup("test_case_2_data_delta/")
+setup_path <- "test_case_2_data_delta/"
+df <- import_from_setup(setup_path)
 head(df)
+
+# get arguments for rec() as dataframe
+file <- list.files(setup_path, pattern = "*_recargs.txt", full.names = TRUE)
+recargs <- read.csv(file)
+recargs
 
 # run rec
 source("user_functions/rec.R")
 test <- rec(original_data = df,
+            #recargs = recargs,       # data frame containing values for the input arguments; takes precedent over individual arguments
             N_c = 101,               # Number of computational grid points
             C_water = 25e3,          # Nutrient concentration in water column (only important for irrigation)
             # parameters for Tikhonov regularization
             lambda = 1,              # 'smoothing' parameter lambda
             alpha_min = 8,           # lowest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_min) )
-            alpha_max = 15,          # largest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_max) )
+            alpha_max = 25,          # largest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_max) )
             N_alpha = 301,           # Number of ratio criterion evaluations in the alpha interval, to find the minimum
             # setting the boundary conditions for the nutrient concentration
             bnd_cond_type_z_min = 1, # type of boundary condition at the top: 1: for concentration / 2: for derivative
@@ -26,6 +33,8 @@ source("user_functions/plot_rec.R")
 plot_rec(test)
 plot_rec(test, type = "localmin")
 plot_rec(test, type = "input")
+#which(test$alpha==test$alpha_opt)
+#which.min(-test$Tikhonov_criterium)
 
 # calculate boundary fluxes
 source("user_functions/boundary_fluxes.R")
