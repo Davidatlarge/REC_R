@@ -15,11 +15,15 @@ rec <- function(
   bnd_cond_type_z_max, # type of boundary condition at the bottom: 1: for concentration / 2: for derivative
   bnd_cond_C_z_max     # value of nutrient concentration or derivative at bottom
 ) {
-  # ---- load packages and helping functions ---- 
+  # ---- load packages ---- 
   suppressMessages(require(matlab)) 
   suppressWarnings(suppressMessages(require(pracma)))
-  suppressMessages(require(scales)) 
-  for(i in list.files(paste0(getwd(), "/help_functions"), pattern = ".R$", full.names = TRUE)) { source(i, local = TRUE) } # source helper functions in a for loop because the argument local = TRUE is not effective in apply
+  suppressMessages(require(scales))
+  
+  # ---- source help functions ----
+  fundir <- grep("/help_functions$", list.dirs(), value = TRUE) # help functions will be sourced as long as the folder is somewhere in the current working directory
+  funlist <- list.files(fundir, pattern = ".R$", full.names = TRUE, recursive = FALSE)
+  for(i in funlist) { source(i, local = TRUE) } # source helper functions in a for loop because the argument local = TRUE is not effective in apply
   
   # ---- import REC arguments if supplied as recargs ----
   if(!is.null(recargs)) {
@@ -41,7 +45,7 @@ rec <- function(
   if(!("beta" %in% colnames(original_data))) {original_data$beta <- 0; cat("column 'beta' not found, using all 0 values\n")}
   if(!("Db" %in% colnames(original_data))) {original_data$Db <- 0; cat("column 'Db' not found, using all 0 values\n")}
   
-  # ---- some pre - operations ---- 
+  # ---- some pre-operations ---- 
   z_data  <- original_data$z
   z_c     <- matlab::linspace(z_data[1], z_data[length(z_data)], N_c)
   
@@ -51,7 +55,7 @@ rec <- function(
   beta    <- operate_property(original_data, "beta", z_c)
   D       <- operate_property(original_data, "D", z_c)
   D_b     <- operate_property(original_data, "Db", z_c)
-  D_total <- D + D_b         # total diffusivity
+  D_total <- D + D_b         
   
   # store the boundary conditions into list
   bnd_cond <- list(type_z_min = bnd_cond_type_z_min,

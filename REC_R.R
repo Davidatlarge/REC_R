@@ -1,5 +1,6 @@
 # load data
 rm(list = ls())
+dev.off()
 source("user_functions/import_from_setup.R")
 setup_path <- "test_case_2_data_delta/"
 df <- import_from_setup(setup_path)
@@ -10,6 +11,7 @@ file <- list.files(setup_path, pattern = "*_recargs.txt", full.names = TRUE)
 recargs <- read.csv(file)
 recargs
 
+#sapply(list.files("1help_functions/", full.names = T, pattern = ".R$"), source)
 # run rec
 source("user_functions/rec.R")
 test <- rec(original_data = df,
