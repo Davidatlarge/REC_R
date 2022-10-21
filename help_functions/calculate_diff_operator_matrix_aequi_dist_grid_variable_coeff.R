@@ -55,7 +55,7 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # =
       sig[i] <- 0
     } else {
       eta <- s[i] * delta_z / ( 2 * D2[i] )
-      sig[i] <- pracma::coth(eta) - 1/eta
+      sig[i] <- 1/tanh(eta) - 1/eta
     }
   }
   
@@ -95,7 +95,7 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # =
   }
   
   # ---- construction of A ---- 
-  A <- pracma::inv(Diff_op)
+  A <- solve(Diff_op)
   
   # ---- Constructing e ---- 
   d <- -C_water * t(beta2[2:(N_grid-1)])  # results in a [1:N] matrix

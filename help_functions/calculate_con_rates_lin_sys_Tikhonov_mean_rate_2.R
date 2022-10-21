@@ -66,7 +66,7 @@ calculate_con_rates_lin_sys_Tikhonov_mean_rate_2 <- function(
     alpha <- alpha_tikho[k]
     
     # finding the Tikhonov solution	
-    R_tilde <- pracma::inv(A_ad %*% A + alpha * B) %*% A_ad %*% C_tilde	
+    R_tilde <- solve(A_ad %*% A + alpha * B) %*% A_ad %*% C_tilde	
     # A_ad is a matrix, A is a matrix, alpha is a scalar, B is a matrix, C_tilde is a 1-column matrix
     
     # constructing the final solution

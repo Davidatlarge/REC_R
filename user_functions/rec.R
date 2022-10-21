@@ -16,7 +16,6 @@ rec <- function(
   bnd_cond_C_z_max     # value of nutrient concentration or derivative at bottom
 ) {
   # ---- load packages ---- 
-  suppressWarnings(suppressMessages(require(pracma)))
   suppressMessages(require(scales))
   
   # ---- source help functions ----

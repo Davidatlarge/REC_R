@@ -7,7 +7,7 @@ optimal_tikho_parameter_quotientenkriterium <- function(R_tilde,
   R_tilde <- make_column_vector(R_tilde)
   
   # ---- determine derivative ---- 
-  H <- pracma::inv(t(A) %*% A + alpha * B)
+  H <- solve(t(A) %*% A + alpha * B)
   d <- -B %*% R_tilde 
   ablei <- H %*% d
   
