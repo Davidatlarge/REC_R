@@ -9,11 +9,11 @@ calculate_B_matrix <- function(lam_0, # =l_0
   delta_z <- z_c[2] - z_c[1]
   
   # ---- L0 ---- 
-  L0 <- matlab::eye(N_red)
+  L0 <- diag(N_red)
   
   # ---- L1 / 1st Derivative ---- 
   N_L1 <- N_red - 1
-  L1 <- matlab::zeros(N_L1, N_red)
+  L1 <- matrix(data = 0, nrow = N_L1, ncol = N_red)
   
   for(i in 1:N_L1) {
     L1[i,i] <- -1
@@ -24,7 +24,7 @@ calculate_B_matrix <- function(lam_0, # =l_0
   
   # ---- L2 / 2nd Derivative ---- 
   N_L2 <- N_red - 2
-  L2 <- matlab::zeros(N_L2, N_red)
+  L2 <- matrix(data = 0, nrow = N_L2, ncol = N_red)
   
   for(i in 1:N_L2) {
     L2[i,i] <- 1

@@ -16,7 +16,6 @@ rec <- function(
   bnd_cond_C_z_max     # value of nutrient concentration or derivative at bottom
 ) {
   # ---- load packages ---- 
-  suppressMessages(require(matlab)) 
   suppressWarnings(suppressMessages(require(pracma)))
   suppressMessages(require(scales))
   
@@ -47,7 +46,7 @@ rec <- function(
   
   # ---- some pre-operations ---- 
   z_data  <- original_data$z
-  z_c     <- matlab::linspace(z_data[1], z_data[length(z_data)], N_c)
+  z_c     <- seq(from = z_data[1], to = z_data[length(z_data)], length.out = N_c)
   
   C_c     <- operate_property(original_data, "C", z_c)
   phi     <- operate_property(original_data, "phi", z_c)
@@ -67,7 +66,7 @@ rec <- function(
   l_0 <- 1
   l_1 <- lambda
   l_2 <- lambda
-  alpha_tikho <- matlab::logspace(alpha_min, alpha_max, N_alpha)
+  alpha_tikho <- 10^seq(alpha_min, alpha_max, length.out = N_alpha)
   
   # ---- Determine Concentration and Rates ---- 
   con_rate <- calculate_con_rates_lin_sys_Tikhonov_mean_rate_2(C_water,

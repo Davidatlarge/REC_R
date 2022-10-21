@@ -7,7 +7,7 @@ find_mean_rate <- function(A, C_hat) {
   #N_red <- max(dim(C_hat)) # matlab was length(C_hat): For arrays with more dimensions, the length is max(size(X)).
   N_red <- length(C_hat)
   
-  E     <- matlab::ones(N_red, 1)
+  E     <- matrix(data = 1, nrow = N_red, ncol = 1)
   M     <- A %*% E                   # A is a square matrix, E is a 1-column matrix, so M is basically rowsums of A
   
   R_c   <- 1 / (t(M) %*% M) * (t(M) %*% C_hat)

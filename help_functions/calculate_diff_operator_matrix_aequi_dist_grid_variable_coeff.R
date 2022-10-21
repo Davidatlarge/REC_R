@@ -2,7 +2,7 @@
 # on an aequidistant grid in z direction.
 # It is A = inv(Diff_op).
 #
-# The coefficient functions por, D, omega and beta are z-dependend.
+# The coefficient functions por, D, omega and beta are z-dependent.
 #
 # For the first derivative term, a blended scheme according to Boudreau is
 # used. For the second derivative term, a central difference scheme is used.
@@ -65,7 +65,7 @@ calculate_diff_operator_matrix_aequi_dist_grid_variable_coeff <- function(z, # =
   cc <- (1-sig) * s / (2*delta_z) - D2 / (delta_z)^2
   
   # ---- Construction of the forward Diff_op ---- 
-  Diff_op <- matlab::zeros(N, N)
+  Diff_op <- matrix(data = 0, nrow = N, ncol = N)
   for(i in 2:(N-1)) {  
     Diff_op[i, i-1] <- aa[i+1]
     Diff_op[i,i]    <- bb[i+1]
