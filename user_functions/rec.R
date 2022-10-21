@@ -15,9 +15,6 @@ rec <- function(
   bnd_cond_type_z_max, # type of boundary condition at the bottom: 1: for concentration / 2: for derivative
   bnd_cond_C_z_max     # value of nutrient concentration or derivative at bottom
 ) {
-  # ---- load packages ---- 
-  suppressMessages(require(scales))
-  
   # ---- source help functions ----
   fundir <- grep("/help_functions$", list.dirs(), value = TRUE) # help functions will be sourced as long as the folder is somewhere in the current working directory
   funlist <- list.files(fundir, pattern = ".R$", full.names = TRUE, recursive = FALSE)
