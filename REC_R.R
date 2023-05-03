@@ -41,6 +41,7 @@ plot_rec(test, type = "input")
 # calculate boundary fluxes
 source("user_functions/boundary_fluxes.R")
 boundary_fluxes(test)
+boundary_fluxes(test, z = c(0, 12.1, 30.5, 51), explain = FALSE)
 
 # calculate integrated rates
 source("user_functions/integrate_rates.R")
