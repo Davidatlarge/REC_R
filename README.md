@@ -1,4 +1,4 @@
-REC\_R
+REC_R
 ================
 
 This project translates algorithms implemented by **Rate Estimation from
@@ -24,12 +24,13 @@ finds the required files in the setup folder and merges them based on z
 files could be saved in the setup without interfering with the import.
 Columns z, C, phi and D have to be supplied and cannot be all zeros;
 columns omega, beta, and Db may not be supplied and will then be
-substituted with all zeros. *C* denotes concentration of the water
-constituent. φ (phi) denotes the sediment porosity, ω (omega) the
-sedimentation rate combined with pore water advection, *D* the molecular
-diffusion coefficient (corrected for sediment properties),
-*D<sub>B</sub>* (Db) denotes the bioturbation coefficient, β (beta) the
-coefficient of irrigation.
+substituted with all zeros. *C* \[µM\] denotes concentration of the
+water constituent. φ (phi) denotes the sediment porosity, ω (omega)
+\[cm/s\] the sum of vertical pore water advection and the sedimentation
+rate, *D* \[cm<sup>2</sup>/s\] the molecular diffusion coefficient
+(valid for the specific sediment temperature and tortuosity),
+*D<sub>B</sub>* (Db) \[cm<sup>2</sup>/s\] denotes the bioturbation
+coefficient, β (beta) \[1/s\] the coefficient of irrigation.
 
 Here we import data from the original example setup.
 
@@ -62,17 +63,17 @@ functions.
 test <- rec(original_data = df,
             recargs = NULL,          # data frame containing values for the input arguments; takes precedent over individual arguments
             N_c = 101,               # Number of computational grid points
-            C_water = 25e3,          # Nutrient concentration in water column (only important for irrigation)
+            C_water = 25e3,          # concentration in water column (only important for irrigation) [µM]
             # parameters for Tikhonov regularization
             lambda = 1,              # 'smoothing' parameter lambda
             alpha_min = 8,           # lowest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_min) )
             alpha_max = 15,          # largest alpha value for Tikhonov regularisation and ratio criterion ( actually log_10(alpha_max) )
             N_alpha = 301,           # Number of ratio criterion evaluations in the alpha interval, to find the minimum
-            # setting the boundary conditions for the nutrient concentration
+            # setting the boundary conditions for the concentration
             bnd_cond_type_z_min = 1, # type of boundary condition at the top: 1: for concentration / 2: for derivative
-            bnd_cond_C_z_min = 25e3, # value of nutrient concentration or derivative at top
+            bnd_cond_C_z_min = 25e3, # value of concentration or derivative at top [µM]
             bnd_cond_type_z_max = 1, # type of boundary condition at the bottom: 1: for concentration / 2: for derivative
-            bnd_cond_C_z_max = 5e3   # value of nutrient concentration or derivative at bottom
+            bnd_cond_C_z_max = 5e3   # value of concentration or derivative at bottom [µM]
             )
 ```
 
@@ -177,9 +178,9 @@ boundary_fluxes(test)
     ## All fluxes are given in: [cm * muM / s] 
     ## Or in related units, if not the standard unit system is used.
 
-    ##   boundary  z    diffusive advective        total
-    ## 1      top  0 0.0046003515         0 0.0046003515
-    ## 2   bottom 50 0.0005314448         0 0.0005314448
+    ##    z    diffusive advective        total
+    ## 1  0 0.0046003515         0 0.0046003515
+    ## 2 50 0.0005314448         0 0.0005314448
 
 ## Calculate integrated rates
 
