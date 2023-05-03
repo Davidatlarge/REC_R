@@ -13,9 +13,9 @@ integrate_rates <- function(rec_out,
   z_int <- sort(c(z_min, z_max))  # must be increasing order
   
   # ---- interpolate values ---- 
-  z_int_spl <- matlab::linspace(z_int[1], z_int[2], 5000)
-  R_int_spl <- pracma::cubicspline(x = z_c, y = R, xi = z_int_spl)
-  
+  z_int_spl <- seq(from = z_int[1], to = z_int[2], length.out = 5000)
+  R_int_spl <- spline(x = z_c, y = R, method = "natural", xout = z_int_spl)$y
+
   # do the integration via Simpsons rule
   # It is important that the z-grid is equidistant.
   # step-wise
@@ -23,7 +23,7 @@ integrate_rates <- function(rec_out,
   
   # ---- weights ---- 
   a <- c(3/8, 7/6, 23/24)
-  b <- pracma::ones(1, length(R_int_spl)-6)
+  b <- matrix(data = 1, nrow = 1, ncol = length(R_int_spl)-6)
   c <- c(23/24, 7/6, 3/8)
   weights <- c(a, b, c)
   
