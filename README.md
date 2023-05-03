@@ -10,6 +10,10 @@ al. 2012](https://www.sciencedirect.com/science/article/abs/pii/S02727714110002
 and can be downloaded
 [here](https://uol.de/icbm/physikalische-ozeanographie-theorie/downloads).
 
+If you use this toolbox, you can find a permanent archived version that
+can be cited at
+[![DOI](https://zenodo.org/badge/306671401.svg)](https://zenodo.org/badge/latestdoi/306671401).
+
 ## Preparing data
 
 The matlab version requires data input from a ‘setup’, a folder
